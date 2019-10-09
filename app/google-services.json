@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1095686981657",
+    "firebase_url": "https://adoptunek.firebaseio.com",
+    "project_id": "adoptunek",
+    "storage_bucket": "adoptunek.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095686981657:android:acfaee1d2c3d96b74e0288",
+        "android_client_info": {
+          "package_name": "pl.adoptunek.adoptunek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095686981657-v7sbjq7nmsujabf0hdqc2nq632u2u02i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.adoptunek.adoptunek",
+            "certificate_hash": "da3f6ebdf92c2568d534a7fa6be7ec9ef0f78519"
+          }
+        },
+        {
+          "client_id": "1095686981657-k3rkkt7fshmbc215c77snbap5opbh2h6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSxjEvj-xdgqFrSki-m_2qH2E0k8MrJSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095686981657-k3rkkt7fshmbc215c77snbap5opbh2h6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
