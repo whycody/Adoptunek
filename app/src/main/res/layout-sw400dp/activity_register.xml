@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="@dimen/wave_height_normal"
+        android:layout_height="@dimen/wave_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,21 +22,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="Zaloguj się"
+        android:layout_marginTop="24dp"
+        android:text="Zarejestruj się"
         android:textColor="@color/colorPrimary"
-        android:textSize="35sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
         android:id="@+id/emailText"
-        style="@style/LoginButtonsStyleNormal"
+        style="@style/LoginButtonsStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
@@ -47,11 +47,11 @@
 
     <EditText
         android:id="@+id/passText"
-        style="@style/LoginButtonsStyleNormal"
+        style="@style/LoginButtonsStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Hasło"
         android:inputType="textPassword"
@@ -60,12 +60,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailText" />
 
-    <Button
-        android:id="@+id/nextBtn"
+    <EditText
+        android:id="@+id/repPassText"
+        style="@style/LoginButtonsStyle"
         android:layout_width="0dp"
-        android:layout_height="@dimen/login_buttons_height_normal"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="Powtórz hasło"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passText" />
+
+    <Button
+        android:id="@+id/registerNextBtn"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/login_buttons_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/login_act_btn_states"
         android:text="Dalej"
@@ -73,20 +88,20 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passText" />
+        app:layout_constraintTop_toBottomOf="@+id/repPassText" />
 
     <Button
-        android:id="@+id/loginWithGoogleBtn"
+        android:id="@+id/registerWithGoogleBtn"
         android:layout_width="0dp"
-        android:layout_height="@dimen/login_buttons_height_normal"
+        android:layout_height="@dimen/login_buttons_height"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/login_google_btn_drw"
-        android:text="Zaloguj z Google"
+        android:text="Zarejestruj z Google"
         android:textAllCaps="false"
         android:textColor="@drawable/login_google_text_states"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nextBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/registerNextBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

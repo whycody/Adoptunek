@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="@dimen/wave_height"
+        android:layout_height="@dimen/wave_height_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,21 +22,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:text="Zarejestruj się"
         android:textColor="@color/colorPrimary"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
         android:id="@+id/emailText"
-        style="@style/LoginButtonsStyle"
+        style="@style/LoginButtonsStyleNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
@@ -47,11 +47,11 @@
 
     <EditText
         android:id="@+id/passText"
-        style="@style/LoginButtonsStyle"
+        style="@style/LoginButtonsStyleNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Hasło"
         android:inputType="textPassword"
@@ -62,11 +62,11 @@
 
     <EditText
         android:id="@+id/repPassText"
-        style="@style/LoginButtonsStyle"
+        style="@style/LoginButtonsStyleNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Powtórz hasło"
         android:inputType="textPassword"
@@ -78,9 +78,9 @@
     <Button
         android:id="@+id/registerNextBtn"
         android:layout_width="0dp"
-        android:layout_height="@dimen/login_buttons_height"
+        android:layout_height="@dimen/login_buttons_height_normal"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/login_act_btn_states"
         android:text="Dalej"
@@ -93,7 +93,7 @@
     <Button
         android:id="@+id/registerWithGoogleBtn"
         android:layout_width="0dp"
-        android:layout_height="@dimen/login_buttons_height"
+        android:layout_height="@dimen/login_buttons_height_normal"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
