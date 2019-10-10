@@ -76,7 +76,7 @@
         app:layout_constraintTop_toBottomOf="@+id/passText" />
 
     <Button
-        android:id="@+id/nextBtn"
+        android:id="@+id/registerNextBtn"
         android:layout_width="0dp"
         android:layout_height="@dimen/login_buttons_height"
         android:layout_marginStart="24dp"
@@ -91,7 +91,7 @@
         app:layout_constraintTop_toBottomOf="@+id/repPassText" />
 
     <Button
-        android:id="@+id/loginWithGoogleBtn"
+        android:id="@+id/registerWithGoogleBtn"
         android:layout_width="0dp"
         android:layout_height="@dimen/login_buttons_height"
         android:layout_marginStart="24dp"
@@ -103,5 +103,5 @@
         android:textColor="@drawable/login_google_text_states"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nextBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/registerNextBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
