@@ -7,6 +7,22 @@
     tools:context=".login.LoginActivity"
     android:background="@android:color/white">
 
+    <ProgressBar
+        android:id="@+id/progressLoginNext"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@android:color/white"
+        android:indeterminateTintMode="src_atop"
+        android:background="@drawable/login_act_btn_drw"
+        android:padding="6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/nextBtn"
+        app:layout_constraintEnd_toEndOf="@+id/nextBtn"
+        app:layout_constraintStart_toStartOf="@+id/nextBtn"
+        app:layout_constraintTop_toTopOf="@+id/nextBtn" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
@@ -85,8 +101,25 @@
         android:background="@drawable/login_google_btn_drw"
         android:text="Zaloguj z Google"
         android:textAllCaps="false"
+        android:enabled="true"
         android:textColor="@drawable/login_google_text_states"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nextBtn" />
+
+    <ProgressBar
+        android:id="@+id/progressLoginGoogle"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone"
+        android:padding="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/loginWithGoogleBtn"
+        app:layout_constraintEnd_toEndOf="@+id/loginWithGoogleBtn"
+        app:layout_constraintStart_toStartOf="@+id/loginWithGoogleBtn"
+        app:layout_constraintTop_toTopOf="@+id/loginWithGoogleBtn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

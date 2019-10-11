@@ -4,19 +4,29 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_register.emailText
 import kotlinx.android.synthetic.main.activity_register.passText
 import pl.adoptunek.adoptunek.R
 
-class LoginActivity : AppCompatActivity(), TextWatcher {
+class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView {
+
+    private lateinit var loginWithGoogleBtnText: String
+    private lateinit var presenter: LoginContract.LoginPresenter
+    private val NEXT_BTN = 0
+    private val GOOGLE_BTN = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        loginWithGoogleBtnText = loginWithGoogleBtn.text.toString()
+        presenter = LoginPresenterImpl(this)
         emailText.addTextChangedListener(this)
         passText.addTextChangedListener(this)
+        nextBtn.setOnClickListener{presenter.nextBtnClicked(emailText.text.toString(), passText.text.toString())}
+        loginWithGoogleBtn.setOnClickListener{presenter.loginWithGoogleBtnClicked()}
         nextBtn.isEnabled = false
     }
 
@@ -33,5 +43,63 @@ class LoginActivity : AppCompatActivity(), TextWatcher {
     }
 
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    }
+
+    override fun showLoadingNextBtn(loading: Boolean) {
+        if(loading) showLoadingNextBtn()
+        else showUnloadingNextBtn()
+        setOtherComponentsActive(NEXT_BTN, !loading)
+    }
+
+    private fun showLoadingNextBtn(){
+        progressLoginNext.visibility = View.VISIBLE
+        nextBtn.visibility = View.INVISIBLE
+    }
+
+    private fun showUnloadingNextBtn(){
+        nextBtn.visibility = View.VISIBLE
+        progressLoginNext.visibility = View.GONE
+    }
+
+    override fun showLoadingGoogleBtn(loading: Boolean) {
+        if(loading) showLoadingGoogleBtn()
+        else showUnloadingGoogleBtn()
+        setOtherComponentsActive(GOOGLE_BTN, !loading)
+    }
+
+    private fun showLoadingGoogleBtn(){
+        loginWithGoogleBtn.text = ""
+        progressLoginGoogle.visibility = View.VISIBLE
+    }
+
+    private fun showUnloadingGoogleBtn(){
+        loginWithGoogleBtn.text = loginWithGoogleBtnText
+        progressLoginGoogle.visibility = View.GONE
+    }
+
+    private fun setOtherComponentsActive(whichBtn: Int, enabled: Boolean){
+        var alpha = getAlphaOfEnabled(enabled)
+        if(whichBtn == NEXT_BTN) loginWithGoogleBtn.alpha = alpha
+        else nextBtn.alpha = alpha
+        emailText.alpha = alpha
+        passText.alpha = alpha
+        setOtherComponentsEnabled(enabled)
+    }
+
+    private fun getAlphaOfEnabled(enabled: Boolean): Float{
+        if(enabled) return 1f
+        else return 0.6f
+    }
+
+    private fun setOtherComponentsEnabled(enabled: Boolean){
+        loginWithGoogleBtn.isEnabled = enabled
+        nextBtn.isEnabled = enabled
+        emailText.isEnabled = enabled
+        passText.isEnabled = enabled
+    }
+
+    override fun loginOperationCompleted(successfull: Boolean, error: String) {
+        if(successfull) Toast.makeText(this, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show()
+        else Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 }
