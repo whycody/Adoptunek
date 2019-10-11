@@ -1,20 +1,28 @@
 package pl.adoptunek.adoptunek.login
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.emailText
 import kotlinx.android.synthetic.main.activity_register.passText
 import pl.adoptunek.adoptunek.R
+import pl.adoptunek.adoptunek.login.google.GoogleContract
+import pl.adoptunek.adoptunek.login.google.GoogleLoginImpl
 
-class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView {
+class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView, GoogleContract.GoogleInterractor {
 
     private lateinit var loginWithGoogleBtnText: String
     private lateinit var presenter: LoginContract.LoginPresenter
+    private lateinit var googleLogin: GoogleContract.GoogleLogin
     private val NEXT_BTN = 0
     private val GOOGLE_BTN = 1
 
@@ -23,16 +31,36 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView 
         setContentView(R.layout.activity_login)
         loginWithGoogleBtnText = loginWithGoogleBtn.text.toString()
         presenter = LoginPresenterImpl(this)
+        googleLogin = GoogleLoginImpl(this, this)
         emailText.addTextChangedListener(this)
         passText.addTextChangedListener(this)
         nextBtn.setOnClickListener{presenter.nextBtnClicked(emailText.text.toString(), passText.text.toString())}
-        loginWithGoogleBtn.setOnClickListener{presenter.loginWithGoogleBtnClicked()}
+        loginWithGoogleBtn.setOnClickListener{
+            showLoadingGoogleBtn(true)
+            googleLogin.loginWithGoogle()
+        }
         nextBtn.isEnabled = false
+        signOut()
+    }
+
+    private fun signOut(){
+        val auth = FirebaseAuth.getInstance()
+        if(auth.currentUser!=null) {
+            val googleSignInClient = GoogleSignIn.getClient(this,
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
+            auth.signOut()
+            googleSignInClient.signOut()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        googleLogin.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun afterTextChanged(p0: Editable?) {
@@ -61,7 +89,7 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView 
         progressLoginNext.visibility = View.GONE
     }
 
-    override fun showLoadingGoogleBtn(loading: Boolean) {
+    private fun showLoadingGoogleBtn(loading: Boolean) {
         if(loading) showLoadingGoogleBtn()
         else showUnloadingGoogleBtn()
         setOtherComponentsActive(GOOGLE_BTN, !loading)
@@ -96,6 +124,11 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView 
         nextBtn.isEnabled = enabled
         emailText.isEnabled = enabled
         passText.isEnabled = enabled
+    }
+
+    override fun loginWithGoogleResult(successfull: Boolean, error: String) {
+        showLoadingGoogleBtn(false)
+        loginOperationCompleted(successfull, error)
     }
 
     override fun loginOperationCompleted(successfull: Boolean, error: String) {

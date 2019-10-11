@@ -1,12 +1,16 @@
 package pl.adoptunek.adoptunek.login.google
 
+import android.content.Intent
+
 interface GoogleContract {
 
     interface GoogleInterractor {
-        fun loginWithGoogleSuccessfull(): Boolean
+        fun loginWithGoogleResult(successfull: Boolean, error: String = "empty")
     }
 
-    interface GoogleView {
+    interface GoogleLogin {
         fun loginWithGoogle()
+
+        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     }
 }

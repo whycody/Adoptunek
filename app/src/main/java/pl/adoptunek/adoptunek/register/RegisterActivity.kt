@@ -1,5 +1,6 @@
 package pl.adoptunek.adoptunek.register
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -10,24 +11,32 @@ import kotlinx.android.synthetic.main.activity_login.emailText
 import kotlinx.android.synthetic.main.activity_login.passText
 import kotlinx.android.synthetic.main.activity_register.*
 import pl.adoptunek.adoptunek.R
+import pl.adoptunek.adoptunek.login.google.GoogleContract
+import pl.adoptunek.adoptunek.login.google.GoogleLoginImpl
 
-class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.RegisterView {
+class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.RegisterView,
+    GoogleContract.GoogleInterractor {
 
     private val NEXT_BTN = 0
     private val GOOGLE_BTN = 1
     private lateinit var registerWithGoogleText: String
     private lateinit var presenter: RegisterContract.RegisterPresenter
+    private lateinit var googleLogin: GoogleContract.GoogleLogin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         registerWithGoogleText = registerWithGoogleBtn.text.toString()
         presenter = RegisterPresenterImpl(this)
+        googleLogin = GoogleLoginImpl(this, this)
         emailText.addTextChangedListener(this)
         passText.addTextChangedListener(this)
         registerNextBtn.setOnClickListener{presenter.nextBtnClicked(emailText.text.toString(),
             passText.text.toString(), repPassText.text.toString())}
-        registerWithGoogleBtn.setOnClickListener{presenter.loginWithGoogleClicked()}
+        registerWithGoogleBtn.setOnClickListener{
+            showLoadingGoogleBtn(true)
+            googleLogin.loginWithGoogle()
+        }
         repPassText.addTextChangedListener(this)
         registerNextBtn.isEnabled = false
     }
@@ -35,6 +44,11 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
     override fun onDestroy() {
         super.onDestroy()
         overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        googleLogin.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun afterTextChanged(p0: Editable?) {
@@ -64,7 +78,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
         progressRegisterNext.visibility = View.GONE
     }
 
-    override fun showLoadingGoogleBtn(loading: Boolean) {
+    private fun showLoadingGoogleBtn(loading: Boolean) {
         if(loading) showLoadingGoogleBtn()
         else showUnloadingGoogleBtn()
         setOtherComponentsActive(GOOGLE_BTN, !loading)
@@ -101,6 +115,11 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
         emailText.isEnabled = enabled
         passText.isEnabled = enabled
         repPassText.isEnabled = enabled
+    }
+
+    override fun loginWithGoogleResult(successfull: Boolean, error: String) {
+        showLoadingGoogleBtn(false)
+        registerOperationCompleted(successfull, error)
     }
 
     override fun registerOperationCompleted(successfull: Boolean, error: String) {

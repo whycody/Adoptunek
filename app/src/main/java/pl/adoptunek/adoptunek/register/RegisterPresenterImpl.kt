@@ -29,8 +29,4 @@ class RegisterPresenterImpl(val view: RegisterContract.RegisterView): RegisterCo
             else -> return "Wystąpił nieznany błąd. Spróbuj ponownie później"
         }
     }
-
-    override fun loginWithGoogleClicked() {
-        view.showLoadingGoogleBtn(true)
-    }
 }

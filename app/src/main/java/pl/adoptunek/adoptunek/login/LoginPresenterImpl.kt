@@ -7,8 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
 class LoginPresenterImpl(val view: LoginContract.LoginView): LoginContract.LoginPresenter {
-
-    val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun nextBtnClicked(email: String, pass: String) {
         view.showLoadingNextBtn(true)
@@ -25,9 +24,5 @@ class LoginPresenterImpl(val view: LoginContract.LoginView): LoginContract.Login
             is FirebaseNetworkException -> return ("Sprawdź swoje łącze internetowe i spróbuj ponownie później.")
             else -> return ("Wystąpił nieznany błąd. Spróbuj ponownie później.")
         }
-    }
-
-    override fun loginWithGoogleBtnClicked() {
-        view.showLoadingGoogleBtn(true)
     }
 }
