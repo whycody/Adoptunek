@@ -1,10 +1,13 @@
 package pl.adoptunek.adoptunek.start
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -19,6 +22,7 @@ class StartActivity : AppCompatActivity() {
 
     private val REGISTER_REQUEST = 0
     private val LOGIN_REQUEST = 1
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +46,29 @@ class StartActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
             .setTitle(getTitle(requestCode))
             .setMessage("Wysłaliśmy wiadomość e-mail na adres" +
-                    " \"${auth.currentUser?.email}\". " +
+                    " ${auth.currentUser?.email}. " +
                     "Zawiera ona odnośnik, na który trzeba kliknąć, w celu aktywowania konta.")
             .setNegativeButton("OK", null)
             .setPositiveButton("Wyślij ponownie"){dialog, which ->
                 sendEmailAgain()
-            }.show()
+            }
+        val alertDialog = builder.create()
+        alertDialog.setOnShowListener{ arg ->
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+        }
+        alertDialog.show()
     }
 
     private fun sendEmailAgain(){
-
+        auth.currentUser!!.sendEmailVerification().addOnCompleteListener{ task ->
+            if(task.isSuccessful) Toast.makeText(this, "Wiadomość e-mail została wysłana ponownie" +
+                    " na adres ${auth.currentUser?.email}.", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(this, "Wystąpił nieznany błąd. Spróbuj ponownie później.",
+                Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getTitle(requestCode: Int): String{

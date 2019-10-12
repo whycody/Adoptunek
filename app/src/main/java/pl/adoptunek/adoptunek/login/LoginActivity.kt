@@ -17,12 +17,15 @@ import kotlinx.android.synthetic.main.activity_register.passText
 import pl.adoptunek.adoptunek.R
 import pl.adoptunek.adoptunek.login.google.GoogleContract
 import pl.adoptunek.adoptunek.login.google.GoogleLoginImpl
+import pl.adoptunek.adoptunek.main.MainActivity
+import pl.adoptunek.adoptunek.start.StartActivity
 
 class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView, GoogleContract.GoogleInterractor {
 
     private lateinit var loginWithGoogleBtnText: String
     private lateinit var presenter: LoginContract.LoginPresenter
     private lateinit var googleLogin: GoogleContract.GoogleLogin
+    private val auth = FirebaseAuth.getInstance()
     private val NEXT_BTN = 0
     private val GOOGLE_BTN = 1
 
@@ -117,11 +120,26 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
 
     override fun loginWithGoogleResult(successfull: Boolean, error: String) {
         showLoadingGoogleBtn(false)
-        loginOperationCompleted(successfull, error)
+        if(successfull){
+            setResult(StartActivity.REGISTER_WITH_GOOGLE_SUCCESS)
+            startMainActivity()
+            finish()
+        }
+        else Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
-    override fun loginOperationCompleted(successfull: Boolean, error: String) {
-        if(successfull) Toast.makeText(this, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show()
+    override fun loginOperationResult(successfull: Boolean, error: String) {
+        if(successfull){
+            if(auth.currentUser!!.isEmailVerified){
+                setResult(StartActivity.LOGIN_SUCCESS)
+                startMainActivity()
+            } else setResult(StartActivity.CHECK_EMAIL_RESULT)
+            finish()
+        }
         else Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun startMainActivity(){
+        startActivity(Intent(this, MainActivity::class.java))
     }
 }

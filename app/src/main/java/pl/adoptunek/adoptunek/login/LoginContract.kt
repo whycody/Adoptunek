@@ -5,7 +5,7 @@ interface LoginContract {
     interface LoginView{
         fun showLoadingNextBtn(loading: Boolean)
 
-        fun loginOperationCompleted(successfull: Boolean, error: String = "empty")
+        fun loginOperationResult(successfull: Boolean, error: String = "empty")
     }
 
     interface LoginPresenter{
