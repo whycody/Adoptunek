@@ -40,17 +40,6 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
             googleLogin.loginWithGoogle()
         }
         nextBtn.isEnabled = false
-        signOut()
-    }
-
-    private fun signOut(){
-        val auth = FirebaseAuth.getInstance()
-        if(auth.currentUser!=null) {
-            val googleSignInClient = GoogleSignIn.getClient(this,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
-            auth.signOut()
-            googleSignInClient.signOut()
-        }
     }
 
     override fun onDestroy() {
@@ -106,7 +95,7 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
     }
 
     private fun setOtherComponentsActive(whichBtn: Int, enabled: Boolean){
-        var alpha = getAlphaOfEnabled(enabled)
+        val alpha = getAlphaOfEnabled(enabled)
         if(whichBtn == NEXT_BTN) loginWithGoogleBtn.alpha = alpha
         else nextBtn.alpha = alpha
         emailText.alpha = alpha

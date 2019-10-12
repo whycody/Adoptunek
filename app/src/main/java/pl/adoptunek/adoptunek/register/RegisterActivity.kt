@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_register.*
 import pl.adoptunek.adoptunek.R
 import pl.adoptunek.adoptunek.login.google.GoogleContract
 import pl.adoptunek.adoptunek.login.google.GoogleLoginImpl
+import pl.adoptunek.adoptunek.start.StartActivity
 
 class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.RegisterView,
     GoogleContract.GoogleInterractor {
@@ -119,11 +120,16 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
 
     override fun loginWithGoogleResult(successfull: Boolean, error: String) {
         showLoadingGoogleBtn(false)
-        registerOperationCompleted(successfull, error)
+        if(successfull){
+            setResult(StartActivity.REGISTER_WITH_GOOGLE_SUCCESS)
+            finish()
+        }else Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
-    override fun registerOperationCompleted(successfull: Boolean, error: String) {
-        if(successfull) Toast.makeText(this, "Zarejestrowano pomyślnie", Toast.LENGTH_SHORT).show()
-        else Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+    override fun registerOperationResult(successfull: Boolean, error: String) {
+        if(successfull){
+            setResult(StartActivity.CHECK_EMAIL_RESULT)
+            finish()
+        } else Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 }

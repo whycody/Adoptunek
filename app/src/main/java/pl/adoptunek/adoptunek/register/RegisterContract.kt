@@ -5,7 +5,7 @@ interface RegisterContract {
     interface RegisterView {
         fun showLoadingNextBtn(loading: Boolean)
 
-        fun registerOperationCompleted(successfull: Boolean, error: String = "empty")
+        fun registerOperationResult(successfull: Boolean, error: String = "empty")
     }
 
     interface RegisterPresenter {

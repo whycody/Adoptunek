@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".register.RegisterActivity"></activity>
+        <activity android:name=".main.MainActivity"></activity>
+        <activity android:name=".register.RegisterActivity" />
         <activity android:name=".login.LoginActivity" />
         <activity
             android:name=".splash.SplashActivity"
@@ -24,7 +25,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".main.MainActivity" />
+        <activity android:name=".start.StartActivity" />
     </application>
 
 </manifest>
