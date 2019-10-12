@@ -1,18 +1,11 @@
 package pl.adoptunek.adoptunek.start
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
-import androidx.annotation.ColorInt
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_start.*
 import pl.adoptunek.adoptunek.R
 import pl.adoptunek.adoptunek.login.LoginActivity
@@ -20,9 +13,7 @@ import pl.adoptunek.adoptunek.register.RegisterActivity
 
 class StartActivity : AppCompatActivity() {
 
-    private val REGISTER_REQUEST = 0
-    private val LOGIN_REQUEST = 1
-    private val auth = FirebaseAuth.getInstance()
+    private val presenter = StartPresenterImpl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,44 +27,9 @@ class StartActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode== CHECK_EMAIL_RESULT)
-            showDialogEmailToVerify(requestCode)
+            presenter.showVerifyEmailAlertDialog(requestCode)
         else if(resultCode == REGISTER_WITH_GOOGLE_SUCCESS || resultCode == LOGIN_SUCCESS)
             finish()
-    }
-
-    private fun showDialogEmailToVerify(requestCode: Int){
-        val auth = FirebaseAuth.getInstance()
-        val builder = AlertDialog.Builder(this)
-            .setTitle(getTitle(requestCode))
-            .setMessage("Wysłaliśmy wiadomość e-mail na adres" +
-                    " ${auth.currentUser?.email}. " +
-                    "Zawiera ona odnośnik, na który trzeba kliknąć, w celu aktywowania konta.")
-            .setNegativeButton("OK", null)
-            .setPositiveButton("Wyślij ponownie"){dialog, which ->
-                sendEmailAgain()
-            }
-        val alertDialog = builder.create()
-        alertDialog.setOnShowListener{ arg ->
-            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-        }
-        alertDialog.show()
-    }
-
-    private fun sendEmailAgain(){
-        auth.currentUser!!.sendEmailVerification().addOnCompleteListener{ task ->
-            if(task.isSuccessful) Toast.makeText(this, "Wiadomość e-mail została wysłana ponownie" +
-                    " na adres ${auth.currentUser?.email}.", Toast.LENGTH_SHORT).show()
-            else Toast.makeText(this, "Wystąpił nieznany błąd. Spróbuj ponownie później.",
-                Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun getTitle(requestCode: Int): String{
-        if(requestCode==REGISTER_REQUEST) return "Zarejestrowano pomyślnie"
-        else return "Sprawdź swoją skrzynkę"
     }
 
     private fun changeStatusBarColor(){
@@ -94,6 +50,8 @@ class StartActivity : AppCompatActivity() {
     }
 
     companion object{
+        val REGISTER_REQUEST = 0
+        val LOGIN_REQUEST = 1
         val CHECK_EMAIL_RESULT = 3
         val REGISTER_WITH_GOOGLE_SUCCESS = 4
         val LOGIN_SUCCESS = 5
