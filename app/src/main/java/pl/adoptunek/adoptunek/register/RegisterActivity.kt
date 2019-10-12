@@ -98,7 +98,7 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
     private fun setOtherComponentsActive(whichBtn: Int, enabled: Boolean){
         val alpha = getAlphaOfEnabled(enabled)
         if(whichBtn == NEXT_BTN) registerWithGoogleBtn.alpha = alpha
-        else registerNextBtn.alpha = alpha
+        else if (!fieldsAreEmpty()) registerNextBtn.alpha = alpha
         emailText.alpha = alpha
         passText.alpha = alpha
         repPassText.alpha = alpha
@@ -112,10 +112,15 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
 
     private fun setOtherComponentsEnabled(enabled: Boolean){
         registerWithGoogleBtn.isEnabled = enabled
-        registerNextBtn.isEnabled = enabled
+        registerNextBtn.isEnabled = (!fieldsAreEmpty() && enabled)
         emailText.isEnabled = enabled
         passText.isEnabled = enabled
         repPassText.isEnabled = enabled
+    }
+
+    private fun fieldsAreEmpty(): Boolean{
+        return !(!emailText.text.isEmpty() && !repPassText.text.isEmpty() &&
+                !passText.text.isEmpty())
     }
 
     override fun loginWithGoogleResult(successfull: Boolean, error: String) {

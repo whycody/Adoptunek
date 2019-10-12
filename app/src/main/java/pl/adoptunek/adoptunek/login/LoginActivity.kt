@@ -100,7 +100,7 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
     private fun setOtherComponentsActive(whichBtn: Int, enabled: Boolean){
         val alpha = getAlphaOfEnabled(enabled)
         if(whichBtn == NEXT_BTN) loginWithGoogleBtn.alpha = alpha
-        else nextBtn.alpha = alpha
+        else if(!fieldsAreEmpty()) nextBtn.alpha = alpha
         emailText.alpha = alpha
         passText.alpha = alpha
         setOtherComponentsEnabled(enabled)
@@ -113,9 +113,13 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
 
     private fun setOtherComponentsEnabled(enabled: Boolean){
         loginWithGoogleBtn.isEnabled = enabled
-        nextBtn.isEnabled = enabled
+        nextBtn.isEnabled = (!fieldsAreEmpty() && enabled)
         emailText.isEnabled = enabled
         passText.isEnabled = enabled
+    }
+
+    private fun fieldsAreEmpty(): Boolean{
+        return !(!emailText.text.isEmpty() && !passText.text.isEmpty())
     }
 
     override fun loginWithGoogleResult(successfull: Boolean, error: String) {
