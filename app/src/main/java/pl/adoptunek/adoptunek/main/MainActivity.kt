@@ -1,32 +1,60 @@
 package pl.adoptunek.adoptunek.main
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
+import android.view.MenuItem
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import pl.adoptunek.adoptunek.R
-import pl.adoptunek.adoptunek.start.StartActivity
+import pl.adoptunek.adoptunek.fragments.HomeFragment
+import pl.adoptunek.adoptunek.fragments.LibraryFragment
+import pl.adoptunek.adoptunek.fragments.ShelterFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private val homeFragment = HomeFragment()
+    private val shelterFragment = ShelterFragment()
+    private val libraryFragment = LibraryFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        signOutBtn.setOnClickListener{signOut()}
+        setSupportActionBar(mainToolbar)
+        val navigationHelper = BottomNavigationViewHelper()
+        navigationHelper.disableShiftMode(mainNav)
+        mainNav.clearAnimation()
+        mainNav.setOnNavigationItemSelectedListener(this)
+        setFragment(getFragmentOfID(mainNav.selectedItemId))
     }
 
-    private fun signOut(){
-        val auth = FirebaseAuth.getInstance()
-        if(auth.currentUser!=null) {
-            val googleSignInClient = GoogleSignIn.getClient(this,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
-            auth.signOut()
-            googleSignInClient.signOut()
-            startActivity(Intent(this, StartActivity::class.java))
-            finish()
+    private fun getFragmentOfID(id: Int): Fragment{
+        when(id){
+            R.id.home -> return homeFragment
+            R.id.shelter -> return shelterFragment
+            else -> return libraryFragment
         }
+    }
+
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+        when(p0.itemId){
+            R.id.home -> {
+                setFragment(homeFragment)
+                return true
+            }R.id.shelter -> {
+                setFragment(shelterFragment)
+                return true
+            }R.id.library -> {
+                setFragment(libraryFragment)
+                return true
+            }
+            else -> return false
+        }
+    }
+
+    private fun setFragment(fragment: Fragment){
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.mainFrameLayout, fragment)
+        fragmentTransaction.commit()
     }
 }
