@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import pl.adoptunek.adoptunek.R
 import pl.adoptunek.adoptunek.fragments.HomeFragment
 import pl.adoptunek.adoptunek.fragments.LibraryFragment
-import pl.adoptunek.adoptunek.fragments.ShelterFragment
+import pl.adoptunek.adoptunek.fragments.shelter.ShelterFragment
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
