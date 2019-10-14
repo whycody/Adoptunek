@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import pl.adoptunek.adoptunek.R
@@ -21,40 +22,48 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(mainToolbar)
-        val navigationHelper = BottomNavigationViewHelper()
-        navigationHelper.disableShiftMode(mainNav)
+        val viewPager = ViewPager(this)
+        viewPager.offscreenPageLimit = 4
         mainNav.clearAnimation()
         mainNav.setOnNavigationItemSelectedListener(this)
-        setFragment(getFragmentOfID(mainNav.selectedItemId))
-    }
-
-    private fun getFragmentOfID(id: Int): Fragment{
-        when(id){
-            R.id.home -> return homeFragment
-            R.id.shelter -> return shelterFragment
-            else -> return libraryFragment
-        }
+        changeFragment(homeFragment, "home")
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when(p0.itemId){
             R.id.home -> {
-                setFragment(homeFragment)
+                changeFragment(homeFragment, "home")
                 return true
             }R.id.shelter -> {
-                setFragment(shelterFragment)
+                changeFragment(shelterFragment, "shelter")
                 return true
             }R.id.library -> {
-                setFragment(libraryFragment)
+                changeFragment(libraryFragment, "library")
                 return true
             }
             else -> return false
         }
     }
 
-    private fun setFragment(fragment: Fragment){
+    private fun setFragment(fragment: Fragment) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.mainFrameLayout, fragment)
         fragmentTransaction.commit()
+    }
+
+    private fun changeFragment(fragment: Fragment, tagFragmentName: String) {
+        val mFragmentManager = supportFragmentManager
+        val fragmentTransaction = mFragmentManager.beginTransaction()
+        val currentFragment = mFragmentManager.primaryNavigationFragment
+        if (currentFragment != null) fragmentTransaction.hide(currentFragment)
+        var fragmentTemp = mFragmentManager.findFragmentByTag(tagFragmentName)
+        if (fragmentTemp == null) {
+            fragmentTemp = fragment
+            fragmentTransaction.add(R.id.mainFrameLayout, fragmentTemp, tagFragmentName)
+        } else fragmentTransaction.show(fragmentTemp)
+
+        fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp)
+        fragmentTransaction.setReorderingAllowed(true)
+        fragmentTransaction.commitNowAllowingStateLoss()
     }
 }
