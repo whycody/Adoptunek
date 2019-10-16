@@ -8,7 +8,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import pl.adoptunek.adoptunek.R
-import pl.adoptunek.adoptunek.fragments.HomeFragment
+import pl.adoptunek.adoptunek.fragments.home.HomeFragment
 import pl.adoptunek.adoptunek.fragments.LibraryFragment
 import pl.adoptunek.adoptunek.fragments.shelter.ShelterFragment
 
