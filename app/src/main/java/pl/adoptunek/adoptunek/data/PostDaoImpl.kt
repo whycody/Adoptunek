@@ -6,8 +6,8 @@ import com.google.firebase.storage.FirebaseStorage
 import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.Post
 import pl.adoptunek.adoptunek.Shelter
-import pl.adoptunek.adoptunek.fragments.home.time.ago.TimeAgoHelper
-import pl.adoptunek.adoptunek.fragments.home.time.ago.TimeAgoHelperImpl
+import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelper
+import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
 class PostDaoImpl(val interractor: PostInterractor): PostDao{
 
@@ -15,7 +15,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao{
     private val storage = FirebaseStorage.getInstance()
     private val storageReference = storage.reference
     private val postList = mutableListOf<Post>()
-    private val timeAgoHelper: TimeAgoHelper = TimeAgoHelperImpl()
+    private val timeHelper: TimeHelper = TimeHelperImpl()
     private var countOfPosts = 3
 
     override fun getPosts(count: Int){
@@ -31,8 +31,9 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao{
                     val dataOfAnimalList = mutableListOf<Pair<String, String>>()
                     if(pet.name!=null) dataOfAnimalList.add(Pair("Imię", pet.name))
                     if(pet.sex!=null) dataOfAnimalList.add(Pair("Płeć", pet.sex))
+                    if(pet.in_shelter!=null) dataOfAnimalList.add(Pair("Czeka", timeHelper.howLongIsWaiting(pet.in_shelter!!)))
                     newPost.dataOfAnimal = dataOfAnimalList
-                    newPost.timeAgo = timeAgoHelper.howLongAgo(pet.add_date!!)
+                    newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!)
                     firestore.collection("shelters").document(pet.shelter!!).get()
                         .addOnSuccessListener { getShelter(idOfAnimal, pet, newPost) }
                 }

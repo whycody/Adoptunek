@@ -4,7 +4,6 @@ import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexboxLayout
@@ -41,7 +40,7 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), PostRo
         val params = FlexboxLayout.LayoutParams(
             FlexboxLayout.LayoutParams.WRAP_CONTENT,
             FlexboxLayout.LayoutParams.WRAP_CONTENT)
-        params.setMargins(0,0,20,0)
+        params.setMargins(0,0,20,20)
         textView.layoutParams = params
         textView.setPadding(18,10,18,10)
         textView.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.white))
