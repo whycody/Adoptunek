@@ -11,4 +11,6 @@ interface PostRowView {
     fun setShelterImage(uri: Uri)
 
     fun setPetImage(uri: Uri)
+
+    fun setDataOfAnimals(data: List<Pair<String, String>>)
 }

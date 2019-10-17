@@ -28,16 +28,20 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao{
                     val idOfAnimal = document.id
                     newPost.idOfAnimal = idOfAnimal
                     val pet = document.toObject(Pet::class.java)
+                    val dataOfAnimalList = mutableListOf<Pair<String, String>>()
+                    if(pet.name!=null) dataOfAnimalList.add(Pair("Imię", pet.name))
+                    if(pet.sex!=null) dataOfAnimalList.add(Pair("Płeć", pet.sex))
+                    newPost.dataOfAnimal = dataOfAnimalList
                     newPost.timeAgo = timeAgoHelper.howLongAgo(pet.add_date!!)
-                    firestore.collection("shelters").document(pet.shelter).get()
-                        .addOnSuccessListener { doc -> getShelter(idOfAnimal, pet, newPost) }
+                    firestore.collection("shelters").document(pet.shelter!!).get()
+                        .addOnSuccessListener { getShelter(idOfAnimal, pet, newPost) }
                 }
             }
         }.addOnFailureListener{ Log.d(TAG, "Failure getPosts")}
     }
 
     private fun getShelter(id: String, pet: Pet, post: Post){
-        firestore.collection("shelters").document(pet.shelter).get()
+        firestore.collection("shelters").document(pet.shelter!!).get()
             .addOnSuccessListener { doc ->
                 val shelter = doc.toObject(Shelter::class.java)
                 post.shelterName = "Schronisko \"${shelter!!.name}\""

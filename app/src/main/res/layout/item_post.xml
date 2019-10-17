@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/shelterImage"
@@ -49,5 +49,19 @@
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/shelterImage"
         app:layout_constraintStart_toEndOf="@+id/shelterImage" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexBoxDataLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:flexDirection="row"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/petImage">
+
+    </com.google.android.flexbox.FlexboxLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

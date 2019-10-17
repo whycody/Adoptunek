@@ -17,7 +17,8 @@ class TimeAgoHelperImpl: TimeAgoHelper {
     }
 
     private fun howLongIsIt(diff: Long): String{
-        if(diff<MINUTE_MILLIS) return ("${diff/1000} sekund temu")
+        if(diff<SECOND_MILLIS*5) return ("${diff/SECOND_MILLIS} sekundy temu")
+        else if(diff<MINUTE_MILLIS) return ("${diff/SECOND_MILLIS} sekund temu")
         else if(diff<2*MINUTE_MILLIS) return ("minutę temu")
         else if(diff<(5*MINUTE_MILLIS)) return ("${diff/MINUTE_MILLIS} minuty temu")
         else if(diff<(60*MINUTE_MILLIS)) return ("${diff/MINUTE_MILLIS} minut temu")

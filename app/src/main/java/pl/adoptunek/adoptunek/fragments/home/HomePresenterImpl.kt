@@ -7,10 +7,11 @@ class HomePresenterImpl(val postsList: List<Post>): HomeContract.HomePresenter {
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = postsList.get(position)
-        holder.setShelterName(post.shelterName)
-        holder.setTimeAgo(post.timeAgo)
-        holder.setShelterImage(post.shelterUri)
-        holder.setPetImage(post.petUri)
+        holder.setShelterName(post.shelterName!!)
+        holder.setTimeAgo(post.timeAgo!!)
+        holder.setShelterImage(post.shelterUri!!)
+        holder.setPetImage(post.petUri!!)
+        holder.setDataOfAnimals(post.dataOfAnimal!!)
     }
 
     override fun getItemCount(): Int {
