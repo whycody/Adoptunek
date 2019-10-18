@@ -1,4 +1,4 @@
-package pl.adoptunek.adoptunek.data
+package pl.adoptunek.adoptunek.data.post
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,7 +9,7 @@ import pl.adoptunek.adoptunek.Shelter
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelper
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
-class PostDaoImpl(val interractor: PostInterractor): PostDao{
+class PostDaoImpl(val interractor: PostInterractor): PostDao {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -64,7 +64,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao{
         storageReference.child(shelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
             post.shelterUri = shelterImage
             postList.add(post)
-            if(postList.size==countOfPosts) interractor.listIsReady(postList)
+            if(postList.size==countOfPosts) interractor.listOfPostsIsReady(postList)
         }.addOnFailureListener{
             getDefaultShelterUri(post)
         }
@@ -75,7 +75,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao{
         storageReference.child(defaultShelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
             post.shelterUri = shelterImage
             postList.add(post)
-            if(postList.size==countOfPosts) interractor.listIsReady(postList)
+            if(postList.size==countOfPosts) interractor.listOfPostsIsReady(postList)
         }.addOnFailureListener{ Log.d(TAG, "Failure getDefaultShelter")}
     }
 

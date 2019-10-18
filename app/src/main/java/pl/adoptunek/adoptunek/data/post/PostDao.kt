@@ -1,4 +1,4 @@
-package pl.adoptunek.adoptunek.data
+package pl.adoptunek.adoptunek.data.post
 
 import pl.adoptunek.adoptunek.Post
 
