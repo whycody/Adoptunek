@@ -4,4 +4,5 @@
     <dimen name="wave_height_normal">135dp</dimen>
     <dimen name="login_buttons_height">60dp</dimen>
     <dimen name="login_buttons_height_normal">50dp</dimen>
+    <dimen name="pet_of_week_radius">4dp</dimen>
 </resources>
