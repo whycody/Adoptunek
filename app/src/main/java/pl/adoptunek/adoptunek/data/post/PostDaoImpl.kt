@@ -26,19 +26,24 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
                     countOfPosts = task.result!!.size()
                     val newPost = Post()
                     val idOfAnimal = document.id
-                    newPost.idOfAnimal = idOfAnimal
                     val pet = document.toObject(Pet::class.java)
-                    val dataOfAnimalList = mutableListOf<Pair<String, String>>()
-                    if(pet.name!=null) dataOfAnimalList.add(Pair("Imię", pet.name))
-                    if(pet.sex!=null) dataOfAnimalList.add(Pair("Płeć", pet.sex))
-                    if(pet.in_shelter!=null) dataOfAnimalList.add(Pair("Czeka", timeHelper.howLongIsWaiting(pet.in_shelter!!)))
-                    newPost.dataOfAnimal = dataOfAnimalList
+                    newPost.idOfAnimal = idOfAnimal
+                    newPost.dataOfAnimal = getDataOfAnimalList(pet)
                     newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!)
                     firestore.collection("shelters").document(pet.shelter!!).get()
                         .addOnSuccessListener { getShelter(idOfAnimal, pet, newPost) }
                 }
             }
         }.addOnFailureListener{ Log.d(TAG, "Failure getPosts")}
+    }
+
+    private fun getDataOfAnimalList(pet: Pet): List<Pair<String, String>>{
+        val dataOfAnimalList = mutableListOf<Pair<String, String>>()
+        if(pet.name!=null) dataOfAnimalList.add(Pair("Imię", pet.name))
+        if(pet.sex!=null) dataOfAnimalList.add(Pair("Płeć", pet.sex))
+        if(pet.in_shelter!=null) dataOfAnimalList.add(Pair("Czeka", timeHelper.howLongIsWaiting(pet.in_shelter!!)))
+        if(pet.breed!=null) dataOfAnimalList.add(Pair("Rasa", pet.breed))
+        return dataOfAnimalList
     }
 
     private fun getShelter(id: String, pet: Pet, post: Post){

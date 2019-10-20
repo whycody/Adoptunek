@@ -15,11 +15,14 @@ data class Post(var idOfAnimal: String? = null,
 data class Pet(val name: String? = null,
                val shelter: String? = null,
                val sex: String? = null,
+               val breed: String? = null,
                var id: String? = null,
                var pet_of_week: Boolean? = null,
                var profile_image: Uri? = null,
                @ServerTimestamp var add_date: Date? = null,
                @ServerTimestamp var in_shelter: Date? = null,
                val type: String? = null)
+
+data class PetOfWeek(val pets: List<String>? = null)
 
 data class Shelter(val name: String = "")

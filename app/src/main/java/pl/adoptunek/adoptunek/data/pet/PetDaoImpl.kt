@@ -3,6 +3,7 @@ package pl.adoptunek.adoptunek.data.pet
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import pl.adoptunek.adoptunek.Pet
+import pl.adoptunek.adoptunek.PetOfWeek
 
 class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDao {
     private val firestore = FirebaseFirestore.getInstance()
@@ -11,13 +12,19 @@ class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDa
     private val petList = mutableListOf<Pet>()
 
     override fun getPetsOfWeek() {
-        val collection = firestore.collection("animals")
-        collection.whereEqualTo("pet_of_week", true).limit(3).get().addOnSuccessListener{ documents ->
-            for(document in documents){
-                val pet = document.toObject(Pet::class.java)
-                pet.id = document.id
-                getPetImage(pet)
-            }
+        val petOfWeekCollection = firestore.collection("pet_of_week")
+        petOfWeekCollection.document("21102019").get().addOnSuccessListener{ document ->
+            val petOfWeek = document.toObject(PetOfWeek::class.java)
+            for(id in petOfWeek!!.pets!!) getDocumentWithPet(id)
+        }
+    }
+
+    private fun getDocumentWithPet(id: String){
+        val animalsCollection = firestore.collection("animals")
+        animalsCollection.document(id).get().addOnSuccessListener{ document ->
+            val pet = document.toObject(Pet::class.java)
+            pet!!.id = id
+            getPetImage(pet)
         }.addOnFailureListener{
             interractor.listWithPetsIsReady(false)
         }
