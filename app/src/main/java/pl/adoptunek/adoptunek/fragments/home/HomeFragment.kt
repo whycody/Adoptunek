@@ -1,7 +1,6 @@
 package pl.adoptunek.adoptunek.fragments.home
 
 import android.graphics.drawable.Drawable
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -55,9 +54,9 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetInterractor {
         thirdPetName = view.findViewById(R.id.thirdPetName)
         petOfWeekView = view.findViewById(R.id.petOfWeekView)
         loadDrawableToImage(context!!.getDrawable(R.drawable.dog_of_week)!!, petOfWeekView)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default)!!, firstPet)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default)!!, secondPet)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default)!!, thirdPet)
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, firstPet)
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, secondPet)
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, thirdPet)
         view.postsRecycle.layoutManager = LinearLayoutManager(activity)
         postDao.getPosts(10)
         petDao.getPetsOfWeek()
