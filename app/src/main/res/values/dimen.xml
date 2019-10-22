@@ -5,4 +5,13 @@
     <dimen name="login_buttons_height">60dp</dimen>
     <dimen name="login_buttons_height_normal">50dp</dimen>
     <dimen name="pet_of_week_radius">4dp</dimen>
+
+    <dimen name="pet_view_header_height">310dp</dimen>
+    <dimen name="activity_margin_content">24dp</dimen>
+
+    <dimen name="fab_elevation">8dp</dimen>
+    <dimen name="fab_margin">32dp</dimen>
+    <dimen name="fab_elevation_press">12dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+
 </resources>

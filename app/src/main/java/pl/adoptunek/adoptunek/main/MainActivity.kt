@@ -3,6 +3,7 @@ package pl.adoptunek.adoptunek.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -36,9 +37,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 return true
             }R.id.shelter -> {
                 changeFragment(shelterFragment, "shelter")
+                mainAppBarLayout.setExpanded(true, false)
                 return true
             }R.id.library -> {
                 changeFragment(libraryFragment, "library")
+                mainAppBarLayout.setExpanded(true, false)
                 return true
             }
             else -> return false

@@ -11,6 +11,7 @@ class HomePresenterImpl(val postsList: List<Post>): HomeContract.HomePresenter {
         holder.setTimeAgo(post.timeAgo!!)
         holder.setShelterImage(post.shelterUri!!)
         holder.setPetImage(post.petUri!!)
+        holder.setOnPetImageClickListener(post.idOfAnimal!!)
         holder.setDataOfAnimals(post.dataOfAnimal!!)
     }
 

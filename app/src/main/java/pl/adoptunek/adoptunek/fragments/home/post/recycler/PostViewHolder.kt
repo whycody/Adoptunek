@@ -1,13 +1,17 @@
 package pl.adoptunek.adoptunek.fragments.home.post.recycler
 
+import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexboxLayout
+import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.R
+import pl.adoptunek.adoptunek.pet.view.PetViewActivity
 
 class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), PostRowView {
 
@@ -25,6 +29,12 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), PostRo
 
     override fun setPetImage(uri: Uri) {
         Glide.with(itemView.context).load(uri).into(itemView.findViewById(R.id.petImage))
+    }
+
+    override fun setOnPetImageClickListener(id: String) {
+        itemView.findViewById<ImageView>(R.id.petImage).setOnClickListener{
+            itemView.context.startActivity(Intent(itemView.context, PetViewActivity::class.java))
+        }
     }
 
     override fun setDataOfAnimals(data: List<Pair<String, String>>) {
