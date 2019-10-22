@@ -13,7 +13,7 @@ class PostRecyclerAdapter(val presenter: HomeContract.HomePresenter, val context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_post, parent, false)
-        return PostViewHolder(view)
+        return PostViewHolder(view, presenter)
     }
 
     override fun getItemCount(): Int {

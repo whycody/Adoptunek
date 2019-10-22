@@ -27,6 +27,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
                     val newPost = Post()
                     val idOfAnimal = document.id
                     val pet = document.toObject(Pet::class.java)
+                    newPost.petName = pet.name
                     newPost.idOfAnimal = idOfAnimal
                     newPost.dataOfAnimal = getDataOfAnimalList(pet)
                     newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!)
@@ -58,7 +59,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
     private fun getPetUri(id: String, pet: Pet, post: Post){
         val petPath = "animals_photos/${id}/profile.jpg"
         storageReference.child(petPath).downloadUrl.addOnSuccessListener { petImage ->
-            post.petUri = petImage
+            post.petUri = petImage.toString()
             getShelterUri(pet, post)
         }.addOnFailureListener{ Log.d(TAG, "Failure getPetUri")}
     }
@@ -67,7 +68,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
         val shelterPath = "shelter/${pet.shelter}/profile.png"
         post.idOfShelter = pet.shelter
         storageReference.child(shelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
-            post.shelterUri = shelterImage
+            post.shelterUri = shelterImage.toString()
             postList.add(post)
             if(postList.size==countOfPosts) interractor.listOfPostsIsReady(postList)
         }.addOnFailureListener{
@@ -78,7 +79,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
     private fun getDefaultShelterUri(post: Post){
         val defaultShelterPath = "shelter/default.png"
         storageReference.child(defaultShelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
-            post.shelterUri = shelterImage
+            post.shelterUri = shelterImage.toString()
             postList.add(post)
             if(postList.size==countOfPosts) interractor.listOfPostsIsReady(postList)
         }.addOnFailureListener{ Log.d(TAG, "Failure getDefaultShelter")}

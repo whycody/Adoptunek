@@ -12,7 +12,7 @@ interface PostRowView {
 
     fun setPetImage(uri: Uri)
 
-    fun setOnPetImageClickListener(id: String)
+    fun setOnPetImageClickListener(id: String, position: Int)
 
     fun setDataOfAnimals(data: List<Pair<String, String>>)
 }

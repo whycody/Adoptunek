@@ -1,6 +1,5 @@
 package pl.adoptunek.adoptunek.fragments.home.post.recycler
 
-import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
@@ -9,11 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexboxLayout
-import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.R
-import pl.adoptunek.adoptunek.pet.view.PetViewActivity
+import pl.adoptunek.adoptunek.fragments.home.HomeContract
 
-class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), PostRowView {
+class PostViewHolder(itemView: View, val presenter: HomeContract.HomePresenter):
+    RecyclerView.ViewHolder(itemView), PostRowView {
 
     override fun setShelterName(name: String) {
         itemView.findViewById<TextView>(R.id.shelterText).text = name
@@ -31,9 +30,9 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), PostRo
         Glide.with(itemView.context).load(uri).into(itemView.findViewById(R.id.petImage))
     }
 
-    override fun setOnPetImageClickListener(id: String) {
+    override fun setOnPetImageClickListener(id: String, position: Int) {
         itemView.findViewById<ImageView>(R.id.petImage).setOnClickListener{
-            itemView.context.startActivity(Intent(itemView.context, PetViewActivity::class.java))
+            presenter.petPostClicked(position)
         }
     }
 

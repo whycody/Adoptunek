@@ -9,6 +9,9 @@ interface HomeContract {
         fun onBindViewHolder(holder: PostViewHolder, position: Int)
 
         fun getItemCount(): Int
+
+        fun petPostClicked(position: Int)
+
     }
 
 }

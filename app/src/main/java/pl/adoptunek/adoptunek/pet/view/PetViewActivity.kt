@@ -1,24 +1,30 @@
 package pl.adoptunek.adoptunek.pet.view
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.alpha
-import androidx.core.view.ViewCompat
 import com.bumptech.glide.Glide
 import pl.adoptunek.adoptunek.R
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_pet_view.*
+import kotlinx.android.synthetic.main.activity_pet_view.petImage
+import pl.adoptunek.adoptunek.Post
+import pl.adoptunek.adoptunek.fragments.home.HomeFragment
 import kotlin.math.abs
 
-class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
+class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, PetViewContract.PetView {
+
+    private val presenter = PetViewPresenterImpl(this, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pet_view)
+        presenter.onCreate()
         changeStatusBarColor()
         setSupportActionBar(petToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -49,6 +55,27 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         val percentage = abs(p1).toFloat() / maxScroll.toFloat()
         petImage.alpha = 2.5f - (percentage*2.5f)
         scrimView.alpha = 2.5f - (percentage*2.5f)
+    }
+
+    override fun getPost(): Post {
+        return intent.getSerializableExtra(HomeFragment.PET) as Post
+    }
+
+    override fun setTitle(title: String) {
+        collapsingToolbar.title = title
+    }
+
+    override fun loadPetImage(uri: Uri) {
+        Glide.with(this).load(uri).into(petImage)
+    }
+
+    override fun addViewToFlexboyLayout(view: View) {
+        petFlexboxLayout.addView(view)
+    }
+
+    override fun setDescribeText(text: String) {
+        describeText.text = text
+        describeHeader.visibility = View.VISIBLE
     }
 
 }

@@ -64,7 +64,7 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetInterractor {
     }
 
     override fun listOfPostsIsReady(list: List<Post>) {
-        presenter = HomePresenterImpl(list)
+        presenter = HomePresenterImpl(list, context!!)
         adapter = PostRecyclerAdapter(presenter, activity!!)
         recycler.adapter = adapter
     }
@@ -73,10 +73,14 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetInterractor {
         if(successfully) loadPetsOfWeek(petList!!)
     }
 
+    override fun petDocumentIsReady(successfully: Boolean, pet: Pet?) {
+
+    }
+
     private fun loadPetsOfWeek(petlist: List<Pet>){
-        loadUriToImage(petlist[0].profile_image!!, firstPet)
-        loadUriToImage(petlist[1].profile_image!!, secondPet)
-        loadUriToImage(petlist[2].profile_image!!, thirdPet)
+        loadUriToImage(Uri.parse(petlist[0].profile_image_uri!!), firstPet)
+        loadUriToImage(Uri.parse(petlist[1].profile_image_uri!!), secondPet)
+        loadUriToImage(Uri.parse(petlist[2].profile_image_uri!!), thirdPet)
         setupText(petlist)
     }
 
@@ -104,5 +108,9 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetInterractor {
             .apply(requestOptions)
             .transition(withCrossFade())
             .into(view)
+    }
+
+    companion object{
+        val PET = "pet"
     }
 }

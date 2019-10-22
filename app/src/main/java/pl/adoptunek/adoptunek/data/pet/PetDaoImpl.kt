@@ -15,16 +15,17 @@ class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDa
         val petOfWeekCollection = firestore.collection("pet_of_week")
         petOfWeekCollection.document("21102019").get().addOnSuccessListener{ document ->
             val petOfWeek = document.toObject(PetOfWeek::class.java)
-            for(id in petOfWeek!!.pets!!) getDocumentWithPet(id)
+            for(id in petOfWeek!!.pets!!) getDocumentWithPet(id, true)
         }
     }
 
-    private fun getDocumentWithPet(id: String){
+    override fun getDocumentWithPet(id: String, collection: Boolean){
         val animalsCollection = firestore.collection("animals")
         animalsCollection.document(id).get().addOnSuccessListener{ document ->
             val pet = document.toObject(Pet::class.java)
             pet!!.id = id
-            getPetImage(pet)
+            if(collection) getPetImage(pet)
+            else interractor.petDocumentIsReady(true, pet)
         }.addOnFailureListener{
             interractor.listWithPetsIsReady(false)
         }
@@ -33,7 +34,7 @@ class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDa
     private fun getPetImage(pet: Pet){
         val petPath = "animals_photos/${pet.id}/profile.jpg"
         storageRef.child(petPath).downloadUrl.addOnSuccessListener{ uri ->
-            pet.profile_image = uri
+            pet.profile_image_uri = uri.toString()
             petList.add(pet)
             if(petList.size==3) interractor.listWithPetsIsReady(true, petList)
         }

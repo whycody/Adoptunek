@@ -58,15 +58,38 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/petFlexboxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_marginTop="25dp"
                 app:flexDirection="row"
-                app:flexWrap="wrap"/>
+                app:flexWrap="wrap" />
+
+            <TextView
+                android:id="@+id/describeHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:layout_marginTop="25dp"
+                android:text="OPIS"
+                android:visibility="gone"
+                android:textSize="23sp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/describeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.6"
+                android:layout_marginTop="15dp"
+                android:textSize="16sp"
+                android:lineSpacingExtra="1dp"
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
 
