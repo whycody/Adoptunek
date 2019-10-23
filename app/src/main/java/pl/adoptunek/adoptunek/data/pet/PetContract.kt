@@ -16,6 +16,8 @@ interface PetContract {
 
         fun photoIsReady(uri: Uri, index: Int)
 
+        fun listWithPhotosIsReady(successfully: Boolean = true, list: List<Uri>)
+
     }
 
     interface PetDao{

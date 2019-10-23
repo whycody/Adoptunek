@@ -33,6 +33,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         petView.setTitle(post.petName!!)
         petDao.getDocumentWithPet(post.idOfAnimal!!, false)
         petDao.getPhotosOfPet(post.idOfAnimal!!)
+        petView.showShelterFooterInLayout()
     }
 
     override fun listWithPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
@@ -58,6 +59,10 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
             .apply(requestOptions)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(imageView)
+    }
+
+    override fun listWithPhotosIsReady(successfully: Boolean, list: List<Uri>) {
+
     }
 
     private fun getDefaultImageView(index: Int): ImageView{

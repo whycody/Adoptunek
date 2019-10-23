@@ -1,16 +1,16 @@
 package pl.adoptunek.adoptunek.pet.view
 
+import android.content.Context
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import pl.adoptunek.adoptunek.R
 import com.google.android.material.appbar.AppBarLayout
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_pet_view.*
 import kotlinx.android.synthetic.main.activity_pet_view.petImage
 import pl.adoptunek.adoptunek.Post
@@ -30,6 +30,18 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         collapsingToolbar.setStatusBarScrimColor(ContextCompat.getColor(this, android.R.color.transparent))
         petAppBar.addOnOffsetChangedListener(this)
+    }
+
+    override fun showShelterFooterInLayout() {
+        val shelterImage = footerShelter.findViewById<CircleImageView>(R.id.shelterImage)
+        Glide.with(this).load(getPost().shelterUri).into(shelterImage)
+        footerShelter.findViewById<TextView>(R.id.shelterName).text = getPost().shelterName
+        footerShelter.visibility = View.VISIBLE
+    }
+
+    private fun getShelterView(): View{
+        val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        return layoutInflater.inflate(R.layout.footer_shelter, findViewById(R.id.footerContraintLayout))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

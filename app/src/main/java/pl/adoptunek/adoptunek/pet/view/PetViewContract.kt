@@ -14,6 +14,8 @@ interface PetViewContract {
 
     interface PetView {
 
+        fun showShelterFooterInLayout()
+
         fun getPost(): Post
 
         fun setTitle(title: String)

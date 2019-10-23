@@ -62,6 +62,7 @@ class PetDaoImpl(val petObjectsInterractor: PetContract.PetObjectsInterractor? =
                 petGalleryInterractor?.photoIsReady(uri, photosOfPet.size)
                 photosOfPet.add(uri)
                 if(numberOfPhotos!=photosOfPet.size) getUrisFromPhotos(index - 1, items)
+                else petGalleryInterractor?.listWithPhotosIsReady(true, photosOfPet)
             }
         }
     }
