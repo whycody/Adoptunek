@@ -28,6 +28,7 @@ data class Pet(val name: String? = null,
                var pet_of_week: Boolean? = null,
                var profile_image_uri: String? = null,
                @ServerTimestamp var add_date: Date? = null,
+               @ServerTimestamp var birth_date: Date? = null,
                @ServerTimestamp var in_shelter: Date? = null,
                val type: String? = null): Serializable
 

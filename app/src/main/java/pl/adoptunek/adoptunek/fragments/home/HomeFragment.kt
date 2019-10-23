@@ -27,7 +27,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import pl.adoptunek.adoptunek.R
 
-class HomeFragment : Fragment(), PostInterractor, PetContract.PetInterractor {
+class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterractor {
 
     private lateinit var presenter: HomeContract.HomePresenter
     private lateinit var adapter: PostRecyclerAdapter

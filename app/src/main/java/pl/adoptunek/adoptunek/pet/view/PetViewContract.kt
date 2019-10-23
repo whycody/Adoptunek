@@ -22,7 +22,7 @@ interface PetViewContract {
 
         fun addViewToFlexboyLayout(view: View)
 
-        fun setDescribeText(text: String)
+        fun addViewToLinearLayout(view: View)
 
     }
 }

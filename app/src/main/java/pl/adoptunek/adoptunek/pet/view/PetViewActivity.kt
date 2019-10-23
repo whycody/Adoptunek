@@ -73,9 +73,8 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         petFlexboxLayout.addView(view)
     }
 
-    override fun setDescribeText(text: String) {
-        describeText.text = text
-        describeHeader.visibility = View.VISIBLE
+    override fun addViewToLinearLayout(view: View) {
+        petLinearLayout.addView(view)
     }
 
 }

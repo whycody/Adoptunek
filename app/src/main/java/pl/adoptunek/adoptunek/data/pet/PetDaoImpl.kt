@@ -1,11 +1,15 @@
 package pl.adoptunek.adoptunek.data.pet
 
+import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.PetOfWeek
 
-class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDao {
+class PetDaoImpl(val petObjectsInterractor: PetContract.PetObjectsInterractor? = null,
+                 val petGalleryInterractor: PetContract.PetGalleryInterractor? = null): PetContract.PetDao {
+
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private val storageRef = storage.reference
@@ -25,9 +29,9 @@ class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDa
             val pet = document.toObject(Pet::class.java)
             pet!!.id = id
             if(collection) getPetImage(pet)
-            else interractor.petDocumentIsReady(true, pet)
+            else petObjectsInterractor?.petDocumentIsReady(true, pet)
         }.addOnFailureListener{
-            interractor.listWithPetsIsReady(false)
+            petObjectsInterractor?.listWithPetsIsReady(false)
         }
     }
 
@@ -36,9 +40,30 @@ class PetDaoImpl(val interractor: PetContract.PetInterractor): PetContract.PetDa
         storageRef.child(petPath).downloadUrl.addOnSuccessListener{ uri ->
             pet.profile_image_uri = uri.toString()
             petList.add(pet)
-            if(petList.size==3) interractor.listWithPetsIsReady(true, petList)
+            if(petList.size==3) petObjectsInterractor?.listWithPetsIsReady(true, petList)
         }
     }
 
+    private val photosOfPet = mutableListOf<Uri>()
+    private var numberOfPhotos: Int? = null
+
+    override fun getPhotosOfPet(id: String) {
+        val petsPath = "animals_photos/${id}/"
+        storageRef.child(petsPath).listAll().addOnSuccessListener{ listResult ->
+            val items = listResult.items
+            numberOfPhotos = items.size
+            getUrisFromPhotos(items.size-1, items)
+        }
+    }
+
+    private fun getUrisFromPhotos(index: Int = 0, items: List<StorageReference>) {
+        items[index].downloadUrl.addOnSuccessListener { uri ->
+            if (numberOfPhotos != null) {
+                petGalleryInterractor?.photoIsReady(uri, photosOfPet.size)
+                photosOfPet.add(uri)
+                if(numberOfPhotos!=photosOfPet.size) getUrisFromPhotos(index - 1, items)
+            }
+        }
+    }
 
 }
