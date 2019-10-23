@@ -1,6 +1,5 @@
 package pl.adoptunek.adoptunek.pet.view
 
-import android.content.Context
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,11 +36,6 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         Glide.with(this).load(getPost().shelterUri).into(shelterImage)
         footerShelter.findViewById<TextView>(R.id.shelterName).text = getPost().shelterName
         footerShelter.visibility = View.VISIBLE
-    }
-
-    private fun getShelterView(): View{
-        val layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        return layoutInflater.inflate(R.layout.footer_shelter, findViewById(R.id.footerContraintLayout))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

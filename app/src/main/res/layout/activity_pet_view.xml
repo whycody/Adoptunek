@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pet_view_header_height"
         android:fitsSystemWindows="true"
+        android:background="@color/colorBrown"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -63,13 +64,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="17dp">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/petFlexboxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="25dp"
                 app:flexDirection="row"
                 app:flexWrap="wrap" />
 

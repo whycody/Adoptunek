@@ -44,7 +44,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         if(successfully){
             putViewsToFlexboxLayout(getDataOfPet(pet!!))
             if(pet.describe!=null){
-                petView.addViewToLinearLayout(getDescribeHeaderTextView())
                 petView.addViewToLinearLayout(getDescribeTextView(pet.describe!!))
             }
         }
@@ -70,7 +69,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         val marginParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT) as ViewGroup.MarginLayoutParams
         imageView.setPadding(0,30,0,0)
-        if(index==0) marginParams.topMargin = 80
+        if(index==0) marginParams.topMargin = 40
         imageView.layoutParams = marginParams
         imageView.adjustViewBounds = true
         imageView.scaleType = ImageView.ScaleType.FIT_START
@@ -86,7 +85,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         if(pet.siblings!=null) list.add(Pair("Rodzeństwo", pet.siblings!!))
         if(pet.full_health!=null) list.add(Pair("W pełni zdrowia", pet.full_health!!))
         if(pet.character!=null) list.add(Pair("Charakter", pet.character!!))
-        if(pet.attitude_to_people!=null) list.add(Pair("Stosunek do ludzi", pet.attitude_to_people!!))
         if(pet.breed!=null) list.add(Pair("Rasa", pet.breed))
         if(pet.coat!=null) list.add(Pair("Umaszczenie", pet.coat!!))
         return list
@@ -110,21 +108,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         textView.setPadding(18,15,18,15)
         textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
         textView.background = context.getDrawable(R.drawable.animal_item_data_drw)
-        textView.textSize = 14f
-        return textView
-    }
-
-    private fun getDescribeHeaderTextView(): TextView {
-        val textView = TextView(context)
-        val marginParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT) as ViewGroup.MarginLayoutParams
-        marginParams.topMargin = 40
-        textView.layoutParams = marginParams
-        textView.text = "OPIS"
-        textView.textSize = 23f
-        textView.setTextColor(ContextCompat.getColor(context, android.R.color.black))
-        textView.alpha = 0.8f
-        textView.requestLayout()
+        textView.textSize = 13f
         return textView
     }
 
@@ -132,12 +116,12 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         val textView = TextView(context)
         val marginParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT) as ViewGroup.MarginLayoutParams
-        marginParams.topMargin = 15
+        marginParams.topMargin = 40
         textView.layoutParams = marginParams
         textView.text = describe
         textView.textSize = 16f
         textView.setTextColor(ContextCompat.getColor(context, android.R.color.black))
-        textView.alpha = 0.6f
+        textView.alpha = 0.7f
         textView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f,
             context.resources.displayMetrics), 1.0f);
         return textView
