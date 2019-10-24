@@ -85,7 +85,7 @@
         android:layout_height="55dp"
         android:layout_marginStart="85dp"
         android:layout_marginEnd="85dp"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/login_btn_drw"
         android:text="Zaloguj się"
         android:textAllCaps="false"

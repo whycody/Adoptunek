@@ -12,7 +12,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/petAppBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pet_view_header_height_normal"
+        android:layout_height="@dimen/pet_view_header_height"
         android:fitsSystemWindows="true"
         android:background="@color/colorBrown"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

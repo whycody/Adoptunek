@@ -11,11 +11,11 @@
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="@dimen/wave_height_normal"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_wave"
-        android:scaleType="fitXY"/>
+        app:srcCompat="@drawable/ic_wave" />
 
     <TextView
         android:id="@+id/textView"
@@ -65,7 +65,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/login_buttons_height_normal"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/login_act_btn_states"
         android:text="Dalej"
