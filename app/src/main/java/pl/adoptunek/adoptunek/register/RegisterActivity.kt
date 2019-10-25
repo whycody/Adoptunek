@@ -1,12 +1,15 @@
 package pl.adoptunek.adoptunek.register
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.emailText
 import kotlinx.android.synthetic.main.activity_login.passText
 import kotlinx.android.synthetic.main.activity_register.*
@@ -26,7 +29,9 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_register)
+        changeStatusBarColor()
         registerWithGoogleText = registerWithGoogleBtn.text.toString()
         presenter = RegisterPresenterImpl(this)
         googleLogin = GoogleLoginImpl(this, this)
@@ -40,6 +45,12 @@ class RegisterActivity : AppCompatActivity(), TextWatcher, RegisterContract.Regi
         }
         repPassText.addTextChangedListener(this)
         registerNextBtn.isEnabled = false
+    }
+
+    private fun changeStatusBarColor(){
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
     }
 
     override fun onDestroy() {

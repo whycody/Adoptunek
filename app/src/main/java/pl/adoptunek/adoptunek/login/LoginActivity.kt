@@ -1,12 +1,15 @@
 package pl.adoptunek.adoptunek.login
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.emailText
@@ -28,7 +31,9 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_login)
+        changeStatusBarColor()
         loginWithGoogleBtnText = loginWithGoogleBtn.text.toString()
         presenter = LoginPresenterImpl(this)
         googleLogin = GoogleLoginImpl(this, this)
@@ -40,6 +45,12 @@ class LoginActivity : AppCompatActivity(), TextWatcher, LoginContract.LoginView,
             googleLogin.loginWithGoogle()
         }
         nextBtn.isEnabled = false
+    }
+
+    private fun changeStatusBarColor(){
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
     }
 
     override fun onDestroy() {

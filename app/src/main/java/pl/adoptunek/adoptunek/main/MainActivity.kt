@@ -3,7 +3,6 @@ package pl.adoptunek.adoptunek.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,27 +30,21 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        when(p0.itemId){
+        return when(p0.itemId){
             R.id.home -> {
                 changeFragment(homeFragment, "home")
-                return true
+                true
             }R.id.shelter -> {
                 changeFragment(shelterFragment, "shelter")
                 mainAppBarLayout.setExpanded(true, false)
-                return true
+                true
             }R.id.library -> {
                 changeFragment(libraryFragment, "library")
                 mainAppBarLayout.setExpanded(true, false)
-                return true
+                true
             }
-            else -> return false
+            else -> false
         }
-    }
-
-    private fun setFragment(fragment: Fragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.mainFrameLayout, fragment)
-        fragmentTransaction.commit()
     }
 
     private fun changeFragment(fragment: Fragment, tagFragmentName: String) {
@@ -64,7 +57,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             fragmentTemp = fragment
             fragmentTransaction.add(R.id.mainFrameLayout, fragmentTemp, tagFragmentName)
         } else fragmentTransaction.show(fragmentTemp)
-
         fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp)
         fragmentTransaction.setReorderingAllowed(true)
         fragmentTransaction.commitNowAllowingStateLoss()

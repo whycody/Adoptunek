@@ -5,10 +5,10 @@ import java.lang.Exception
 
 class RegisterPresenterImpl(val view: RegisterContract.RegisterView): RegisterContract.RegisterPresenter {
 
-    val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun nextBtnClicked(email: String, pass: String, repPass: String) {
-        if(!pass.equals(repPass)) view.registerOperationResult(false, "Hasła nie są takie same.")
+        if(pass != repPass) view.registerOperationResult(false, "Hasła nie są takie same.")
         else registerNewAccount(email, pass)
     }
 
@@ -32,11 +32,11 @@ class RegisterPresenterImpl(val view: RegisterContract.RegisterView): RegisterCo
     }
 
     private fun handleError(exception: Exception): String{
-        when(exception){
-            is FirebaseAuthWeakPasswordException -> return "Hasło jest zbyt słabe"
-            is FirebaseAuthInvalidCredentialsException -> return "Podany adres e-mail jest nieprawidłowy"
-            is FirebaseAuthUserCollisionException -> return "Podany adres e-mail nie jest dostępny"
-            else -> return "Wystąpił nieznany błąd. Spróbuj ponownie później"
+        return when(exception){
+            is FirebaseAuthWeakPasswordException -> "Hasło jest zbyt słabe"
+            is FirebaseAuthInvalidCredentialsException -> "Podany adres e-mail jest nieprawidłowy"
+            is FirebaseAuthUserCollisionException -> "Podany adres e-mail nie jest dostępny"
+            else -> "Wystąpił nieznany błąd. Spróbuj ponownie później"
         }
     }
 }

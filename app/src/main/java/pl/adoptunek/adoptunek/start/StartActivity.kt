@@ -1,6 +1,7 @@
 package pl.adoptunek.adoptunek.start
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
@@ -17,6 +18,7 @@ class StartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_start)
         changeStatusBarColor()
         Glide.with(this).load(getDrawable(R.drawable.corgi)).into(corgiView)
@@ -33,10 +35,9 @@ class StartActivity : AppCompatActivity() {
     }
 
     private fun changeStatusBarColor(){
-        val window = getWindow()
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.setStatusBarColor(ContextCompat.getColor(this, android.R.color.black))
+        window.statusBarColor = ContextCompat.getColor(this, android.R.color.black)
     }
 
     private fun startRegisterActivity(){
