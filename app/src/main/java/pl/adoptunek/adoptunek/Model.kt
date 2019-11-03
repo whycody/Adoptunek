@@ -33,4 +33,7 @@ data class Pet(val name: String? = null,
 
 data class PetOfWeek(val pets: List<String>? = null)
 
-data class Shelter(val name: String = "")
+data class Shelter(var name: String? = null,
+                   var id: String? = null,
+                   var location_latitude: Double? = null,
+                   var location_longitude: Double? = null)

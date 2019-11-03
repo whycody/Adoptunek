@@ -3,6 +3,7 @@ package pl.adoptunek.adoptunek.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(mainToolbar)
+        setSupportActionBar(mainToolbar as Toolbar)
         val viewPager = ViewPager(this)
         viewPager.offscreenPageLimit = 4
         mainNav.clearAnimation()
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 true
             }R.id.shelter -> {
                 changeFragment(shelterFragment, "shelter")
+                //TODO ask for the permissions
                 mainAppBarLayout.setExpanded(true, false)
                 true
             }R.id.library -> {
