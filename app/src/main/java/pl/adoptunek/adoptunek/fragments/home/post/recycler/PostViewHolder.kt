@@ -39,7 +39,7 @@ class PostViewHolder(itemView: View, val presenter: HomeContract.HomePresenter):
     override fun setDataOfAnimals(data: List<Pair<String, String>>) {
         for(item in data){
             val textView = getDefaultTextView()
-            textView.setText("${item.first}: ${item.second}")
+            textView.text = "${item.first}: ${item.second}"
             itemView.findViewById<FlexboxLayout>(R.id.flexBoxDataLayout).addView(textView)
         }
     }

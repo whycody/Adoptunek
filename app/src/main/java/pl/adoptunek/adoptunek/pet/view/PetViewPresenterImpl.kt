@@ -80,8 +80,10 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         val list = mutableListOf<Pair<String, String>>()
         list.add(Pair("Imię", pet.name!!))
         list.add(Pair("Płeć", pet.sex!!))
-        if(pet.birth_date!=null) list.add(Pair("Wiek", timeHelper.howLongIsWaiting(pet.birth_date!!)))
-        if(pet.in_shelter!=null) list.add(Pair("Czeka", timeHelper.howLongIsWaiting(pet.in_shelter!!)))
+        if(pet.birth_date!=null) list.add(Pair("Wiek", timeHelper.howLongAgo(pet.birth_date!!,
+            TimeHelperImpl.PET_HOW_LONG_IS_WAITING)))
+        if(pet.in_shelter!=null) list.add(Pair("Czeka", timeHelper.howLongAgo(pet.birth_date!!,
+            TimeHelperImpl.PET_HOW_LONG_IS_WAITING)))
         if(pet.siblings!=null) list.add(Pair("Rodzeństwo", pet.siblings!!))
         if(pet.full_health!=null) list.add(Pair("W pełni zdrowia", pet.full_health!!))
         if(pet.character!=null) list.add(Pair("Charakter", pet.character!!))

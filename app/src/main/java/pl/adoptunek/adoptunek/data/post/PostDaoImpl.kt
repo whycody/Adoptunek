@@ -30,7 +30,8 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
                     newPost.petName = pet.name
                     newPost.idOfAnimal = idOfAnimal
                     newPost.dataOfAnimal = getDataOfAnimalList(pet)
-                    newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!)
+                    newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!,
+                        TimeHelperImpl.POST_HOW_LONG_AGO)
                     firestore.collection("shelters").document(pet.shelter!!).get()
                         .addOnSuccessListener { getShelter(idOfAnimal, pet, newPost) }
                 }
@@ -42,7 +43,8 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
         val dataOfAnimalList = mutableListOf<Pair<String, String>>()
         if(pet.name!=null) dataOfAnimalList.add(Pair("Imię", pet.name))
         if(pet.sex!=null) dataOfAnimalList.add(Pair("Płeć", pet.sex))
-        if(pet.in_shelter!=null) dataOfAnimalList.add(Pair("Czeka", timeHelper.howLongIsWaiting(pet.in_shelter!!)))
+        if(pet.in_shelter!=null) dataOfAnimalList.add(Pair("Czeka",
+            timeHelper.howLongAgo(pet.in_shelter!!, TimeHelperImpl.PET_HOW_LONG_IS_WAITING)))
         if(pet.breed!=null) dataOfAnimalList.add(Pair("Rasa", pet.breed))
         return dataOfAnimalList
     }

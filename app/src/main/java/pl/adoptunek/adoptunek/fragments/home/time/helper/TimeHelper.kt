@@ -4,7 +4,5 @@ import java.util.*
 
 interface TimeHelper {
 
-    fun howLongAgo(date: Date): String
-
-    fun howLongIsWaiting(date: Date): String
+    fun howLongAgo(date: Date, type: Int): String
 }
