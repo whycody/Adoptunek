@@ -1,7 +1,9 @@
 package pl.adoptunek.adoptunek.data.post
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.Post
@@ -9,7 +11,7 @@ import pl.adoptunek.adoptunek.Shelter
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelper
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
-class PostDaoImpl(val interractor: PostInterractor): PostDao {
+class PostDaoImpl(private val interractor: PostInterractor): PostDao {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -19,14 +21,16 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
     private var countOfPosts = 3
 
     override fun getPosts(count: Int){
-        val collection = firestore.collection("animals")
-        collection.limit(count.toLong()).get().addOnCompleteListener{ task ->
+        val firstQuery = firestore.collection("animals")
+            .orderBy("add_date", Query.Direction.DESCENDING)
+        firstQuery.get().addOnCompleteListener{ task ->
             if(task.isSuccessful){
                 for(document in task.result!!){
                     countOfPosts = task.result!!.size()
                     val newPost = Post()
                     val idOfAnimal = document.id
                     val pet = document.toObject(Pet::class.java)
+                    newPost.addDate = (document.get("add_date") as Timestamp).toDate()
                     newPost.petName = pet.name
                     newPost.idOfAnimal = idOfAnimal
                     newPost.dataOfAnimal = getDataOfAnimalList(pet)
@@ -71,7 +75,7 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
         storageReference.child(shelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
             post.shelterUri = shelterImage.toString()
             postList.add(post)
-            if(postList.size==countOfPosts) interractor.listOfPostsIsReady(postList)
+            if(postList.size==countOfPosts) listIsReady()
         }.addOnFailureListener{
             getDefaultShelterUri(post)
         }
@@ -82,8 +86,13 @@ class PostDaoImpl(val interractor: PostInterractor): PostDao {
         storageReference.child(defaultShelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
             post.shelterUri = shelterImage.toString()
             postList.add(post)
-            if(postList.size==countOfPosts) interractor.listOfPostsIsReady(postList)
+            if(postList.size==countOfPosts) listIsReady()
         }.addOnFailureListener{ Log.d(TAG, "Failure getDefaultShelter")}
+    }
+
+    private fun listIsReady(){
+        val sortedList = postList.sortedWith(compareBy { it.addDate }).reversed()
+        interractor.listOfPostsIsReady(sortedList)
     }
 
     companion object{

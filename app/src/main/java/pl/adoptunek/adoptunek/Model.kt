@@ -11,6 +11,7 @@ data class Post(var idOfAnimal: String? = null,
                 var timeAgo: String? = null,
                 var shelterUri: String? = null,
                 var petUri: String? = null,
+                @ServerTimestamp var addDate: Date? = null,
                 var dataOfAnimal: List<Pair<String, String>>? = null): Serializable
 
 data class Pet(val name: String? = null,
