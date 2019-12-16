@@ -7,7 +7,7 @@ import pl.adoptunek.adoptunek.Post
 import pl.adoptunek.adoptunek.fragments.home.post.recycler.PostViewHolder
 import pl.adoptunek.adoptunek.pet.view.PetViewActivity
 
-class HomePresenterImpl(private val postsList: List<Post>, val context: Context): HomeContract.HomePresenter {
+class HomePresenterImpl(private var postsList: List<Post>, val context: Context): HomeContract.HomePresenter {
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = postsList[position]
@@ -27,5 +27,9 @@ class HomePresenterImpl(private val postsList: List<Post>, val context: Context)
         val intent = Intent(context, PetViewActivity::class.java)
         intent.putExtra(HomeFragment.PET, postsList[position])
         context.startActivity(intent)
+    }
+
+    override fun refreshListOfPosts(list: List<Post>) {
+        postsList = list
     }
 }

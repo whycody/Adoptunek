@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -31,6 +32,7 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
 
     private lateinit var presenter: HomeContract.HomePresenter
     private lateinit var adapter: PostRecyclerAdapter
+    private lateinit var nestedScroll: NestedScrollView
     private lateinit var recycler: RecyclerView
     private val postDao = PostDaoImpl(this)
     private val petDao = PetDaoImpl(this)
@@ -46,6 +48,8 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         recycler = view.postsRecycle
+        nestedScroll = view.postNested
+        addScrollListenerToRecycler()
         firstPet = view.findViewById(R.id.firstPet)
         secondPet = view.findViewById(R.id.secondPet)
         thirdPet = view.findViewById(R.id.thirdPet)
@@ -63,10 +67,23 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         return view
     }
 
+    private fun addScrollListenerToRecycler(){
+        val nestedListener =
+            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if(!v.canScrollVertically(1)) postDao.loadMorePosts()
+            }
+        nestedScroll.setOnScrollChangeListener(nestedListener)
+    }
+
     override fun listOfPostsIsReady(list: List<Post>) {
         presenter = HomePresenterImpl(list, context!!)
         adapter = PostRecyclerAdapter(presenter, activity!!)
         recycler.adapter = adapter
+    }
+
+    override fun listOfPostsIsUpdated(list: List<Post>) {
+        presenter.refreshListOfPosts(list)
+        adapter.notifyItemInserted(list.size-1)
     }
 
     override fun listWithPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
