@@ -40,25 +40,25 @@
                         android:id="@+id/petOfWeekBackgr"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/pet_of_week_rect_backgr_drw"/>
+                        android:background="@drawable/pet_of_week_rect_backgr_drw" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"
                         android:padding="10dp"
-                        android:text="#PET\n#OF\n#WEEK" />
+                        android:text="#PET\n#OF\n#WEEK"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginRight="5dp">
+                    android:orientation="vertical">
 
                     <pl.adoptunek.adoptunek.fragments.home.SquareImageView
                         android:id="@+id/firstPet"
@@ -73,17 +73,17 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/pet_of_week_name_drw"
                         android:gravity="center"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="5dp">
+                    android:orientation="vertical">
 
                     <pl.adoptunek.adoptunek.fragments.home.SquareImageView
                         android:id="@+id/secondPet"
@@ -98,8 +98,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/pet_of_week_name_drw"
                         android:gravity="center"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -122,29 +122,25 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/pet_of_week_name_drw"
                         android:gravity="center"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <FrameLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postsRecycle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="true" />
 
-                <ProgressBar
-                    android:layout_marginTop="50dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/postsRecycle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="true" />
-
-            </FrameLayout>
+            <ProgressBar
+                android:id="@+id/loadingProgress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"/>
 
         </LinearLayout>
 

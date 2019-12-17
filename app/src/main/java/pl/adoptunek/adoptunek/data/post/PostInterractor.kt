@@ -6,5 +6,7 @@ interface PostInterractor {
 
     fun listOfPostsIsReady(list: List<Post>)
 
-    fun listOfPostsIsUpdated(list: List<Post>)
+    fun listOfPostsIsUpdated(list: List<Post>, finishedLoading: Boolean = false)
+
+    fun endListOfPosts()
 }

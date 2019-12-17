@@ -21,15 +21,16 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
     private val timeHelper: TimeHelper = TimeHelperImpl()
     private var lastSnapshot: DocumentSnapshot? = null
     private var countOfPosts = 4
+    private var limitOfPosts = 4L
 
     override fun getPosts(count: Int){
         val firstQuery = firestore.collection("animals")
-            .orderBy("add_date", Query.Direction.DESCENDING).limit(countOfPosts.toLong())
+            .orderBy("add_date", Query.Direction.DESCENDING).limit(limitOfPosts)
         firstQuery.get().addOnCompleteListener{ task ->
             if(task.isSuccessful){
                 lastSnapshot = task.result!!.documents.get(task.result!!.size()-1)
+                countOfPosts = task.result!!.size()
                 for(document in task.result!!){
-                    countOfPosts = task.result!!.size()
                     val newPost = Post()
                     val idOfAnimal = document.id
                     val pet = document.toObject(Pet::class.java)
@@ -50,12 +51,14 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
         val secondQuery = firestore.collection("animals")
             .orderBy("add_date", Query.Direction.DESCENDING)
             .startAfter(lastSnapshot!!)
-            .limit(countOfPosts.toLong())
+            .limit(limitOfPosts)
         secondQuery.get().addOnCompleteListener{ task ->
+            if(task.isSuccessful && task.result!!.size()==0) interractor.endListOfPosts()
             if(task.isSuccessful && task.result!!.size()>0){
                 lastSnapshot = task.result!!.documents.get(task.result!!.size()-1)
+                countOfPosts += task.result!!.size()
+                if(task.result!!.size()<limitOfPosts) interractor.endListOfPosts()
                 for(document in task.result!!){
-                    countOfPosts = task.result!!.size()
                     val newPost = Post()
                     val idOfAnimal = document.id
                     val pet = document.toObject(Pet::class.java)
@@ -88,7 +91,10 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
                 val shelter = doc.toObject(Shelter::class.java)
                 post.shelterName = "Schronisko \"${shelter!!.name}\""
                 getPetUri(id, pet, post)
-            }.addOnFailureListener{ Log.d(TAG, "Failure getShelter")}
+            }.addOnFailureListener{
+                Log.d(TAG, "Failure getShelter")
+                countOfPosts--
+            }
     }
 
     private fun getPetUri(id: String, pet: Pet, post: Post){
@@ -96,7 +102,10 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
         storageReference.child(petPath).downloadUrl.addOnSuccessListener { petImage ->
             post.petUri = petImage.toString()
             getShelterUri(pet, post)
-        }.addOnFailureListener{ Log.d(TAG, "Failure getPetUri")}
+        }.addOnFailureListener{
+            Log.d(TAG, "Failure getPetUri")
+            countOfPosts--
+        }
     }
 
     private fun getShelterUri(pet: Pet, post: Post){
@@ -105,7 +114,7 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
         storageReference.child(shelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
             post.shelterUri = shelterImage.toString()
             postList.add(post)
-            if(postList.size>=countOfPosts) listIsReady()
+            if(postList.size>=limitOfPosts) listIsReady()
         }.addOnFailureListener{
             getDefaultShelterUri(post)
         }
@@ -117,13 +126,16 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
             post.shelterUri = shelterImage.toString()
             postList.add(post)
             if(postList.size>=countOfPosts) listIsReady()
-        }.addOnFailureListener{ Log.d(TAG, "Failure getDefaultShelter")}
+        }.addOnFailureListener{
+            Log.d(TAG, "Failure getDefaultShelter")
+            countOfPosts--
+        }
     }
 
     private fun listIsReady(){
         val sortedList = postList
-        if(sortedList.size==countOfPosts) interractor.listOfPostsIsReady(sortedList)
-        else interractor.listOfPostsIsUpdated(sortedList)
+        if(sortedList.size==limitOfPosts.toInt()) interractor.listOfPostsIsReady(sortedList)
+        else interractor.listOfPostsIsUpdated(sortedList, sortedList.size==countOfPosts)
     }
 
     companion object{

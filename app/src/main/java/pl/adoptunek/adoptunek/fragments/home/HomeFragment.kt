@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
     private lateinit var adapter: PostRecyclerAdapter
     private lateinit var nestedScroll: NestedScrollView
     private lateinit var recycler: RecyclerView
+    private lateinit var loadingProgressBar: ProgressBar
     private val postDao = PostDaoImpl(this)
     private val petDao = PetDaoImpl(this)
     private lateinit var firstPet: ImageView
@@ -43,12 +45,15 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
     private lateinit var secondPetName: TextView
     private lateinit var thirdPetName: TextView
     private lateinit var petOfWeekView: ImageView
+    private var isLoading = false
+    private var endOfPosts = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         recycler = view.postsRecycle
         nestedScroll = view.postNested
+        loadingProgressBar = view.loadingProgress
         addScrollListenerToRecycler()
         firstPet = view.findViewById(R.id.firstPet)
         secondPet = view.findViewById(R.id.secondPet)
@@ -70,20 +75,32 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
     private fun addScrollListenerToRecycler(){
         val nestedListener =
             NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                if(!v.canScrollVertically(1)) postDao.loadMorePosts()
+                if(!v.canScrollVertically(1) && !isLoading && !endOfPosts){
+                    postDao.loadMorePosts()
+                    isLoading = true
+                    loadingProgressBar.visibility = View.VISIBLE
+                }
             }
         nestedScroll.setOnScrollChangeListener(nestedListener)
     }
 
     override fun listOfPostsIsReady(list: List<Post>) {
+        loadingProgressBar.visibility = View.GONE
         presenter = HomePresenterImpl(list, context!!)
         adapter = PostRecyclerAdapter(presenter, activity!!)
         recycler.adapter = adapter
     }
 
-    override fun listOfPostsIsUpdated(list: List<Post>) {
+    override fun listOfPostsIsUpdated(list: List<Post>, finishedLoading: Boolean) {
         presenter.refreshListOfPosts(list)
         adapter.notifyItemInserted(list.size-1)
+        isLoading = !finishedLoading
+        if(finishedLoading) loadingProgressBar.visibility = View.GONE
+    }
+
+    override fun endListOfPosts() {
+        endOfPosts = true
+        loadingProgressBar.visibility = View.GONE
     }
 
     override fun listWithPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
