@@ -23,7 +23,8 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
     private var countOfPosts = 4
     private var limitOfPosts = 4L
 
-    override fun getPosts(count: Int){
+    override fun getPosts(reset: Boolean){
+        if(reset) postList.clear()
         val firstQuery = firestore.collection("animals")
             .orderBy("add_date", Query.Direction.DESCENDING).limit(limitOfPosts)
         firstQuery.get().addOnCompleteListener{ task ->

@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
@@ -29,13 +30,14 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import pl.adoptunek.adoptunek.R
 
-class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterractor {
+class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInterractor, PetContract.PetObjectsInterractor {
 
     private lateinit var presenter: HomeContract.HomePresenter
     private lateinit var adapter: PostRecyclerAdapter
     private lateinit var nestedScroll: NestedScrollView
     private lateinit var recycler: RecyclerView
     private lateinit var loadingProgressBar: ProgressBar
+    private lateinit var refreshLayout: SwipeRefreshLayout
     private val postDao = PostDaoImpl(this)
     private val petDao = PetDaoImpl(this)
     private lateinit var firstPet: ImageView
@@ -54,7 +56,6 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         recycler = view.postsRecycle
         nestedScroll = view.postNested
         loadingProgressBar = view.loadingProgress
-        addScrollListenerToRecycler()
         firstPet = view.findViewById(R.id.firstPet)
         secondPet = view.findViewById(R.id.secondPet)
         thirdPet = view.findViewById(R.id.thirdPet)
@@ -62,12 +63,12 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         secondPetName = view.findViewById(R.id.secondPetName)
         thirdPetName = view.findViewById(R.id.thirdPetName)
         petOfWeekView = view.findViewById(R.id.petOfWeekView)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_of_week)!!, petOfWeekView)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, firstPet)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, secondPet)
-        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, thirdPet)
+        refreshLayout = view.findViewById(R.id.refreshLayout)
+        refreshLayout.setOnRefreshListener(this)
         view.postsRecycle.layoutManager = LinearLayoutManager(activity)
-        postDao.getPosts(10)
+        addScrollListenerToRecycler()
+        loadPetOfWeekImages()
+        postDao.getPosts()
         petDao.getPetsOfWeek()
         return view
     }
@@ -76,15 +77,40 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         val nestedListener =
             NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 if(!v.canScrollVertically(1) && !isLoading && !endOfPosts){
-                    postDao.loadMorePosts()
                     isLoading = true
+                    postDao.loadMorePosts()
                     loadingProgressBar.visibility = View.VISIBLE
                 }
             }
         nestedScroll.setOnScrollChangeListener(nestedListener)
     }
 
+    private fun loadPetOfWeekImages(){
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_of_week)!!, petOfWeekView)
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, firstPet)
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, secondPet)
+        loadDrawableToImage(context!!.getDrawable(R.drawable.dog_default_black)!!, thirdPet)
+    }
+
+    private fun loadDrawableToImage(drawable: Drawable, view: ImageView){
+        var requestOptions = RequestOptions()
+        requestOptions = requestOptions.transform(CenterCrop(), RoundedCorners(16))
+        Glide.with(activity!!)
+            .load(drawable)
+            .apply(requestOptions)
+            .transition(withCrossFade())
+            .into(view)
+    }
+
+    override fun onRefresh() {
+        postDao.getPosts(true)
+    }
+
     override fun listOfPostsIsReady(list: List<Post>) {
+        if(refreshLayout.isRefreshing){
+            refreshLayout.isRefreshing = false
+            endOfPosts = false
+        }
         loadingProgressBar.visibility = View.GONE
         presenter = HomePresenterImpl(list, context!!)
         adapter = PostRecyclerAdapter(presenter, activity!!)
@@ -95,12 +121,12 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         presenter.refreshListOfPosts(list)
         adapter.notifyItemInserted(list.size-1)
         isLoading = !finishedLoading
-        if(finishedLoading) loadingProgressBar.visibility = View.GONE
+        if(finishedLoading) loadingProgressBar.visibility = View.INVISIBLE
     }
 
     override fun endListOfPosts() {
         endOfPosts = true
-        loadingProgressBar.visibility = View.GONE
+        loadingProgressBar.visibility = View.INVISIBLE
     }
 
     override fun listWithPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
@@ -115,23 +141,7 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
         loadUriToImage(Uri.parse(petlist[0].profile_image_uri!!), firstPet)
         loadUriToImage(Uri.parse(petlist[1].profile_image_uri!!), secondPet)
         loadUriToImage(Uri.parse(petlist[2].profile_image_uri!!), thirdPet)
-        setupText(petlist)
-    }
-
-    private fun setupText(petlist: List<Pet>){
-        firstPetName.text = petlist[0].name
-        secondPetName.text = petlist[1].name
-        thirdPetName.text = petlist[2].name
-    }
-
-    private fun loadDrawableToImage(drawable: Drawable, view: ImageView){
-        var requestOptions = RequestOptions()
-        requestOptions = requestOptions.transform(CenterCrop(), RoundedCorners(16))
-        Glide.with(activity!!)
-            .load(drawable)
-            .apply(requestOptions)
-            .transition(withCrossFade())
-            .into(view)
+        setupTextOfWeekPets(petlist)
     }
 
     private fun loadUriToImage(uri: Uri, view: ImageView){
@@ -142,6 +152,12 @@ class HomeFragment : Fragment(), PostInterractor, PetContract.PetObjectsInterrac
             .apply(requestOptions)
             .transition(withCrossFade())
             .into(view)
+    }
+
+    private fun setupTextOfWeekPets(petlist: List<Pet>){
+        firstPetName.text = petlist[0].name
+        secondPetName.text = petlist[1].name
+        thirdPetName.text = petlist[2].name
     }
 
     companion object{
