@@ -23,11 +23,17 @@ class PostViewHolder(itemView: View, val presenter: HomeContract.HomePresenter):
     }
 
     override fun setShelterImage(uri: Uri) {
-        Glide.with(itemView.context).load(uri).into(itemView.findViewById(R.id.shelterImage))
+        Glide.with(itemView.context)
+            .load(uri)
+            .placeholder(R.drawable.placeholder)
+            .into(itemView.findViewById(R.id.shelterImage))
     }
 
     override fun setPetImage(uri: Uri) {
-        Glide.with(itemView.context).load(uri).into(itemView.findViewById(R.id.petImage))
+        Glide.with(itemView.context)
+            .load(uri)
+            .placeholder(R.drawable.placeholder)
+            .into(itemView.findViewById(R.id.petImage))
     }
 
     override fun setOnPetImageClickListener(id: String, position: Int) {

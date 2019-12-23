@@ -9,10 +9,11 @@ import com.google.firebase.storage.FirebaseStorage
 import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.Post
 import pl.adoptunek.adoptunek.Shelter
+import pl.adoptunek.adoptunek.fragments.home.post.recycler.PostViewHolder
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelper
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
-class PostDaoImpl(private val interractor: PostInterractor): PostDao {
+class PostDaoImpl(private val interractor: PostInterractor? = null): PostDao {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -35,6 +36,7 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
                     val newPost = Post()
                     val idOfAnimal = document.id
                     val pet = document.toObject(Pet::class.java)
+                    newPost.idOfShelter = pet.shelter
                     newPost.addDate = (document.get("add_date") as Timestamp).toDate()
                     newPost.petName = pet.name
                     newPost.idOfAnimal = idOfAnimal
@@ -42,7 +44,7 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
                     newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!,
                         TimeHelperImpl.POST_HOW_LONG_AGO)
                     firestore.collection("shelters").document(pet.shelter!!).get()
-                        .addOnSuccessListener { getShelter(idOfAnimal, pet, newPost) }
+                        .addOnSuccessListener { getShelter(pet, newPost) }
                 }
             }
         }.addOnFailureListener{ Log.d(TAG, "Failure getPosts")}
@@ -54,15 +56,16 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
             .startAfter(lastSnapshot!!)
             .limit(limitOfPosts)
         secondQuery.get().addOnCompleteListener{ task ->
-            if(task.isSuccessful && task.result!!.size()==0) interractor.endListOfPosts()
+            if(task.isSuccessful && task.result!!.size()==0) interractor?.endListOfPosts()
             if(task.isSuccessful && task.result!!.size()>0){
                 lastSnapshot = task.result!!.documents.get(task.result!!.size()-1)
                 countOfPosts += task.result!!.size()
-                if(task.result!!.size()<limitOfPosts) interractor.endListOfPosts()
+                if(task.result!!.size()<limitOfPosts) interractor?.endListOfPosts()
                 for(document in task.result!!){
                     val newPost = Post()
                     val idOfAnimal = document.id
                     val pet = document.toObject(Pet::class.java)
+                    newPost.idOfShelter = pet.shelter
                     newPost.addDate = (document.get("add_date") as Timestamp).toDate()
                     newPost.petName = pet.name
                     newPost.idOfAnimal = idOfAnimal
@@ -71,7 +74,7 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
                     newPost.timeAgo = timeHelper.howLongAgo(pet.add_date!!,
                         TimeHelperImpl.POST_HOW_LONG_AGO)
                     firestore.collection("shelters").document(pet.shelter!!).get()
-                        .addOnSuccessListener { getShelter(idOfAnimal, pet, newPost) }
+                        .addOnSuccessListener { getShelter(pet, newPost) }
                 }
             }
         }.addOnFailureListener{ Log.d(TAG, "Failure getPosts")}
@@ -86,57 +89,49 @@ class PostDaoImpl(private val interractor: PostInterractor): PostDao {
         return dataOfAnimalList
     }
 
-    private fun getShelter(id: String, pet: Pet, post: Post){
+    private fun getShelter(pet: Pet, post: Post){
         firestore.collection("shelters").document(pet.shelter!!).get()
             .addOnSuccessListener { doc ->
                 val shelter = doc.toObject(Shelter::class.java)
                 post.shelterName = "Schronisko \"${shelter!!.name}\""
-                getPetUri(id, pet, post)
+                postList.add(post)
+                if(postList.size>=limitOfPosts) listIsReady()
             }.addOnFailureListener{
                 Log.d(TAG, "Failure getShelter")
                 countOfPosts--
             }
     }
 
-    private fun getPetUri(id: String, pet: Pet, post: Post){
-        val petPath = "animals_photos/${id}/profile.jpg"
+    override fun getPetUri(holder: PostViewHolder, post: Post){
+        val petPath = "animals_photos/${post.idOfAnimal}/profile.jpg"
         storageReference.child(petPath).downloadUrl.addOnSuccessListener { petImage ->
+            holder.setPetImage(petImage)
             post.petUri = petImage.toString()
-            getShelterUri(pet, post)
-        }.addOnFailureListener{
-            Log.d(TAG, "Failure getPetUri")
-            countOfPosts--
         }
     }
 
-    private fun getShelterUri(pet: Pet, post: Post){
-        val shelterPath = "shelter/${pet.shelter}/profile.png"
-        post.idOfShelter = pet.shelter
+    override fun getShelterUri(holder: PostViewHolder, post: Post){
+        val shelterPath = "shelter/${post.idOfShelter}/profile.png"
         storageReference.child(shelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
+            holder.setShelterImage(shelterImage)
             post.shelterUri = shelterImage.toString()
-            postList.add(post)
-            if(postList.size>=limitOfPosts) listIsReady()
         }.addOnFailureListener{
-            getDefaultShelterUri(post)
+            getDefaultShelterUri(holder, post)
         }
     }
 
-    private fun getDefaultShelterUri(post: Post){
+    private fun getDefaultShelterUri(holder: PostViewHolder, post: Post){
         val defaultShelterPath = "shelter/default.png"
         storageReference.child(defaultShelterPath).downloadUrl.addOnSuccessListener { shelterImage ->
+            holder.setShelterImage(shelterImage)
             post.shelterUri = shelterImage.toString()
-            postList.add(post)
-            if(postList.size>=countOfPosts) listIsReady()
-        }.addOnFailureListener{
-            Log.d(TAG, "Failure getDefaultShelter")
-            countOfPosts--
         }
     }
 
     private fun listIsReady(){
         val sortedList = postList
-        if(sortedList.size==limitOfPosts.toInt()) interractor.listOfPostsIsReady(sortedList)
-        else interractor.listOfPostsIsUpdated(sortedList, sortedList.size==countOfPosts)
+        if(sortedList.size==limitOfPosts.toInt()) interractor?.listOfPostsIsReady(sortedList)
+        else interractor?.listOfPostsIsUpdated(sortedList, sortedList.size==countOfPosts)
     }
 
     companion object{
