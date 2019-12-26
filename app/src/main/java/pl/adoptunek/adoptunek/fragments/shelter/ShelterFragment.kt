@@ -21,12 +21,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.Marker
 
-class ShelterFragment : Fragment(), OnMapReadyCallback, ShelterContract.ShelterView {
+class ShelterFragment : Fragment(), OnMapReadyCallback, ShelterContract.ShelterView, GoogleMap.OnCameraMoveListener {
 
-    private lateinit var googleMap: GoogleMap
+    private var googleMap: GoogleMap? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val presenter = ShelterPresenterImpl(this)
+    private val markersList = mutableListOf<Marker>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,6 +41,7 @@ class ShelterFragment : Fragment(), OnMapReadyCallback, ShelterContract.ShelterV
 
     override fun onMapReady(p0: GoogleMap?) {
         googleMap = p0!!
+        googleMap?.setOnCameraMoveListener(this)
         val zoomLevel = 12.0f
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -46,29 +49,36 @@ class ShelterFragment : Fragment(), OnMapReadyCallback, ShelterContract.ShelterV
                 val latitude = location.latitude
                 val longitude = location.longitude
                 val lastLocationLatLng = LatLng(latitude, longitude)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocationLatLng, zoomLevel))
+                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocationLatLng, zoomLevel))
             }else moveMapToOlsztyn(zoomLevel)
         }.addOnFailureListener{ moveMapToOlsztyn(zoomLevel) }
-        googleMap.isMyLocationEnabled = true
+        googleMap?.isMyLocationEnabled = true
     }
 
     private fun moveMapToOlsztyn(zoomLevel: Float){
         val olsztyn = LatLng(53.775711, 20.477980)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(olsztyn, zoomLevel))
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(olsztyn, zoomLevel))
     }
 
     override fun addShelterToMap(shelter: Shelter) {
         val latLng = LatLng(shelter.location_latitude!!, shelter.location_longitude!!)
-        val shelterMarker = googleMap.addMarker(MarkerOptions().position(latLng))
-        shelterMarker.tag = shelter.id
-        shelterMarker.title = shelter.name
+        val shelterMarker = googleMap?.addMarker(MarkerOptions().position(latLng))
+        shelterMarker?.tag = shelter.id
+        shelterMarker?.title = shelter.name
         val bitmapdraw = activity!!.getDrawable(R.drawable.ic_shelter_marker) as BitmapDrawable
         val b = bitmapdraw.bitmap
         val smallMarker = Bitmap.createScaledBitmap(b, 63, 100, false)
-        shelterMarker.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+        shelterMarker?.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+        if(shelterMarker!=null) markersList.add(shelterMarker)
     }
 
     override fun sheltersLoadingFailed() {
         Toast.makeText(activity, "Nie udało załadować się schronisk", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCameraMove() {
+        for(marker in markersList){
+            marker.isVisible = googleMap?.cameraPosition!!.zoom > 10.0f
+        }
     }
 }
