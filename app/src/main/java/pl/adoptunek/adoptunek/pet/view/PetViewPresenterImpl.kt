@@ -21,10 +21,12 @@ import pl.adoptunek.adoptunek.data.pet.PetDaoImpl
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
 class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.PetView):
-    PetViewContract.PetViewPresenter, PetContract.PetObjectsInterractor, PetContract.PetGalleryInterractor {
+    PetViewContract.PetViewPresenter,
+    PetContract.PetObjectInterractor,
+    PetContract.PetGalleryInterractor {
 
     private lateinit var post: Post
-    private val petDao = PetDaoImpl(this, this)
+    private val petDao = PetDaoImpl(this, null, this)
     private val timeHelper = TimeHelperImpl()
 
     override fun onCreate() {
@@ -34,10 +36,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         petDao.getDocumentWithPet(post.idOfAnimal!!, false)
         petDao.getPhotosOfPet(post.idOfAnimal!!)
         petView.showShelterFooterInLayout()
-    }
-
-    override fun listWithPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
-
     }
 
     override fun petDocumentIsReady(successfully: Boolean, pet: Pet?) {

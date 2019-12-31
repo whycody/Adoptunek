@@ -30,7 +30,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import pl.adoptunek.adoptunek.R
 
-class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInterractor, PetContract.PetObjectsInterractor {
+class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInterractor, PetContract.PetOfWeekInterractor {
 
     private lateinit var presenter: HomeContract.HomePresenter
     private lateinit var adapter: PostRecyclerAdapter
@@ -39,7 +39,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
     private lateinit var loadingProgressBar: ProgressBar
     private lateinit var refreshLayout: SwipeRefreshLayout
     private val postDao = PostDaoImpl(this)
-    private val petDao = PetDaoImpl(this)
+    private val petDao = PetDaoImpl(null, this, null)
     private lateinit var firstPet: ImageView
     private lateinit var secondPet: ImageView
     private lateinit var thirdPet: ImageView
@@ -129,12 +129,8 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
         loadingProgressBar.visibility = View.INVISIBLE
     }
 
-    override fun listWithPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
+    override fun listWithWeekPetsIsReady(successfully: Boolean, petList: List<Pet>?) {
         if(successfully) loadPetsOfWeek(petList!!)
-    }
-
-    override fun petDocumentIsReady(successfully: Boolean, pet: Pet?) {
-
     }
 
     private fun loadPetsOfWeek(petlist: List<Pet>){

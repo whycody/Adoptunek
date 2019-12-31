@@ -7,8 +7,9 @@ import com.google.firebase.storage.StorageReference
 import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.PetOfWeek
 
-class PetDaoImpl(val petObjectsInterractor: PetContract.PetObjectsInterractor? = null,
-                 val petGalleryInterractor: PetContract.PetGalleryInterractor? = null): PetContract.PetDao {
+class PetDaoImpl(val petGalleryInterractor: PetContract.PetGalleryInterractor? = null,
+                 val petOfWeekInterractor: PetContract.PetOfWeekInterractor? = null,
+                 val petObjectInterractor: PetContract.PetObjectInterractor? = null): PetContract.PetDao {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -23,15 +24,15 @@ class PetDaoImpl(val petObjectsInterractor: PetContract.PetObjectsInterractor? =
         }
     }
 
-    override fun getDocumentWithPet(id: String, collection: Boolean){
+    override fun getDocumentWithPet(id: String, petOfWeekCollection: Boolean){
         val animalsCollection = firestore.collection("animals")
         animalsCollection.document(id).get().addOnSuccessListener{ document ->
             val pet = document.toObject(Pet::class.java)
             pet!!.id = id
-            if(collection) getPetImage(pet)
-            else petObjectsInterractor?.petDocumentIsReady(true, pet)
+            if(petOfWeekCollection) getPetImage(pet)
+            else petObjectInterractor?.petDocumentIsReady(true, pet)
         }.addOnFailureListener{
-            petObjectsInterractor?.listWithPetsIsReady(false)
+            petOfWeekInterractor?.listWithWeekPetsIsReady(false)
         }
     }
 
@@ -40,7 +41,7 @@ class PetDaoImpl(val petObjectsInterractor: PetContract.PetObjectsInterractor? =
         storageRef.child(petPath).downloadUrl.addOnSuccessListener{ uri ->
             pet.profile_image_uri = uri.toString()
             petList.add(pet)
-            if(petList.size==3) petObjectsInterractor?.listWithPetsIsReady(true, petList)
+            if(petList.size==3) petOfWeekInterractor?.listWithWeekPetsIsReady(true, petList)
         }
     }
 

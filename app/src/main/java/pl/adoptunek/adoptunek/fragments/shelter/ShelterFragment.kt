@@ -65,9 +65,9 @@ class ShelterFragment : Fragment(), OnMapReadyCallback, ShelterContract.ShelterV
         val shelterMarker = googleMap?.addMarker(MarkerOptions().position(latLng))
         shelterMarker?.tag = shelter.id
         shelterMarker?.title = shelter.name
-        val bitmapdraw = activity!!.getDrawable(R.drawable.ic_shelter_marker) as BitmapDrawable
-        val b = bitmapdraw.bitmap
-        val smallMarker = Bitmap.createScaledBitmap(b, 63, 100, false)
+        val bitmapFromDrawable = activity!!.getDrawable(R.drawable.ic_shelter_marker) as BitmapDrawable
+        val bitmap = bitmapFromDrawable.bitmap
+        val smallMarker = Bitmap.createScaledBitmap(bitmap, 63, 100, false)
         shelterMarker?.setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker))
         if(shelterMarker!=null) markersList.add(shelterMarker)
     }

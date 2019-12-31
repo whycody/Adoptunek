@@ -5,9 +5,12 @@ import pl.adoptunek.adoptunek.Pet
 
 interface PetContract {
 
-    interface PetObjectsInterractor{
+    interface PetOfWeekInterractor{
 
-        fun listWithPetsIsReady(successfully: Boolean = true, petList: List<Pet>? = null)
+        fun listWithWeekPetsIsReady(successfully: Boolean = true, petList: List<Pet>? = null)
+    }
+
+    interface PetObjectInterractor{
 
         fun petDocumentIsReady(successfully: Boolean = true, pet: Pet? = null)
     }
@@ -17,7 +20,6 @@ interface PetContract {
         fun photoIsReady(uri: Uri, index: Int)
 
         fun listWithPhotosIsReady(successfully: Boolean = true, list: List<Uri>)
-
     }
 
     interface PetDao{
