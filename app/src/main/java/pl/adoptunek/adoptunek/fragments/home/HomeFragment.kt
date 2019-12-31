@@ -40,12 +40,13 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
     private lateinit var refreshLayout: SwipeRefreshLayout
     private val postDao = PostDaoImpl(this)
     private val petDao = PetDaoImpl(null, this, null)
+    private var petsOfWeekList: List<Pet>? = null
     private lateinit var firstPet: ImageView
     private lateinit var secondPet: ImageView
     private lateinit var thirdPet: ImageView
-    private lateinit var firstPetName: TextView
-    private lateinit var secondPetName: TextView
-    private lateinit var thirdPetName: TextView
+    private lateinit var firstPetNameView: TextView
+    private lateinit var secondPetNameView: TextView
+    private lateinit var thirdPetNameView: TextView
     private lateinit var petOfWeekView: ImageView
     private var isLoading = false
     private var endOfPosts = false
@@ -59,9 +60,9 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
         firstPet = view.findViewById(R.id.firstPet)
         secondPet = view.findViewById(R.id.secondPet)
         thirdPet = view.findViewById(R.id.thirdPet)
-        firstPetName = view.findViewById(R.id.firstPetName)
-        secondPetName = view.findViewById(R.id.secondPetName)
-        thirdPetName = view.findViewById(R.id.thirdPetName)
+        firstPetNameView = view.findViewById(R.id.firstPetName)
+        secondPetNameView = view.findViewById(R.id.secondPetName)
+        thirdPetNameView = view.findViewById(R.id.thirdPetName)
         petOfWeekView = view.findViewById(R.id.petOfWeekView)
         refreshLayout = view.findViewById(R.id.refreshLayout)
         refreshLayout.setOnRefreshListener(this)
@@ -133,11 +134,12 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
         if(successfully) loadPetsOfWeek(petList!!)
     }
 
-    private fun loadPetsOfWeek(petlist: List<Pet>){
-        loadUriToImage(Uri.parse(petlist[0].profile_image_uri!!), firstPet)
-        loadUriToImage(Uri.parse(petlist[1].profile_image_uri!!), secondPet)
-        loadUriToImage(Uri.parse(petlist[2].profile_image_uri!!), thirdPet)
-        setupTextOfWeekPets(petlist)
+    private fun loadPetsOfWeek(petsOfWeekList: List<Pet>){
+        loadUriToImage(Uri.parse(petsOfWeekList[0].profile_image_uri!!), firstPet)
+        loadUriToImage(Uri.parse(petsOfWeekList[1].profile_image_uri!!), secondPet)
+        loadUriToImage(Uri.parse(petsOfWeekList[2].profile_image_uri!!), thirdPet)
+        setupTextOfWeekPets(petsOfWeekList)
+        this.petsOfWeekList = petsOfWeekList
     }
 
     private fun loadUriToImage(uri: Uri, view: ImageView){
@@ -151,9 +153,9 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
     }
 
     private fun setupTextOfWeekPets(petlist: List<Pet>){
-        firstPetName.text = petlist[0].name
-        secondPetName.text = petlist[1].name
-        thirdPetName.text = petlist[2].name
+        firstPetNameView.text = petlist[0].name
+        secondPetNameView.text = petlist[1].name
+        thirdPetNameView.text = petlist[2].name
     }
 
     companion object{

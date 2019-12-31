@@ -9,7 +9,7 @@ interface PostDao {
 
     fun loadMorePosts()
 
-    fun getPetUri(holder: PostViewHolder, post: Post)
+    fun getPetUri(holder: PostViewHolder? = null, post: Post)
 
-    fun getShelterUri(holder: PostViewHolder, post: Post)
+    fun getShelterUri(holder: PostViewHolder? = null, post: Post)
 }
