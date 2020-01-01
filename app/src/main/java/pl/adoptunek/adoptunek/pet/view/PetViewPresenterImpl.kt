@@ -13,38 +13,30 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.flexbox.FlexboxLayout
-import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.Post
 import pl.adoptunek.adoptunek.R
+import pl.adoptunek.adoptunek.data.converter.PetConverterImpl
 import pl.adoptunek.adoptunek.data.pet.PetContract
 import pl.adoptunek.adoptunek.data.pet.PetDaoImpl
-import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
 class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.PetView):
     PetViewContract.PetViewPresenter,
-    PetContract.PetObjectInterractor,
     PetContract.PetGalleryInterractor {
 
     private lateinit var post: Post
-    private val petDao = PetDaoImpl(this, null, this)
-    private val timeHelper = TimeHelperImpl()
+    private val petDao = PetDaoImpl(this)
+    private val petConverter = PetConverterImpl()
 
     override fun onCreate() {
         post = petView.getPost()
         petView.loadPetImage(Uri.parse(post.petUri))
         petView.setTitle(post.petName!!)
-        petDao.getDocumentWithPet(post.idOfAnimal!!, false)
         petDao.getPhotosOfPet(post.idOfAnimal!!)
         petView.showShelterFooterInLayout()
-    }
-
-    override fun petDocumentIsReady(successfully: Boolean, pet: Pet?) {
-        if(successfully){
-            putViewsToFlexboxLayout(getDataOfPet(pet!!))
-            if(pet.describe!=null){
-                petView.addViewToLinearLayout(getDescribeTextView(pet.describe!!))
-            }
-        }
+        if(post.pet?.describe!=null)
+            petView.addViewToLinearLayout(getDescribeTextView(post.pet?.describe!!))
+        petConverter.addFullDataToPost(post)
+        putViewsToFlexboxLayout(post.dataOfAnimal!!)
     }
 
     override fun photoIsReady(uri: Uri, index: Int) {
@@ -58,10 +50,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
             .into(imageView)
     }
 
-    override fun listWithPhotosIsReady(successfully: Boolean, list: List<Uri>) {
-
-    }
-
     private fun getDefaultImageView(index: Int): ImageView{
         val imageView = ImageView(context)
         val marginParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -72,22 +60,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         imageView.adjustViewBounds = true
         imageView.scaleType = ImageView.ScaleType.FIT_START
         return imageView
-    }
-
-    private fun getDataOfPet(pet: Pet): List<Pair<String, String>>{
-        val list = mutableListOf<Pair<String, String>>()
-        list.add(Pair("Imię", pet.name!!))
-        list.add(Pair("Płeć", pet.sex!!))
-        if(pet.birth_date!=null) list.add(Pair("Wiek", timeHelper.howLongAgo(pet.birth_date!!,
-            TimeHelperImpl.PET_HOW_LONG_IS_WAITING)))
-        if(pet.in_shelter!=null) list.add(Pair("Czeka", timeHelper.howLongAgo(pet.birth_date!!,
-            TimeHelperImpl.PET_HOW_LONG_IS_WAITING)))
-        if(pet.siblings!=null) list.add(Pair("Rodzeństwo", pet.siblings!!))
-        if(pet.full_health!=null) list.add(Pair("W pełni zdrowia", pet.full_health!!))
-        if(pet.character!=null) list.add(Pair("Charakter", pet.character!!))
-        if(pet.breed!=null) list.add(Pair("Rasa", pet.breed))
-        if(pet.coat!=null) list.add(Pair("Umaszczenie", pet.coat!!))
-        return list
     }
 
     private fun putViewsToFlexboxLayout(list: List<Pair<String, String>>){
@@ -123,7 +95,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         textView.setTextColor(ContextCompat.getColor(context, android.R.color.black))
         textView.alpha = 0.7f
         textView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f,
-            context.resources.displayMetrics), 1.0f);
+            context.resources.displayMetrics), 1.0f)
         return textView
     }
 
