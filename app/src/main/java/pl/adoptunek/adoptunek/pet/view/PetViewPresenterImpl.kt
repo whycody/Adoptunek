@@ -1,8 +1,10 @@
 package pl.adoptunek.adoptunek.pet.view
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -26,17 +28,22 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
     private lateinit var post: Post
     private val petDao = PetDaoImpl(this)
     private val petConverter = PetConverterImpl()
+    private lateinit var res: Resources
+    private var pxFromDp = 0
 
     override fun onCreate() {
         post = petView.getPost()
-        petView.loadPetImage(Uri.parse(post.petUri))
+        res = context.resources
+        pxFromDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 17f, res.displayMetrics).toInt()
         petView.setTitle(post.petName!!)
+        petView.loadPetImage(Uri.parse(post.petUri))
+        if(post.petOfWeek == true) petView.addViewToLinearLayout(getPetOfWeekTextView(), 0)
+        petConverter.addFullDataToPost(post)
+        putViewsToFlexboxLayout(post.dataOfAnimal!!)
         petDao.getPhotosOfPet(post.idOfAnimal!!)
         petView.showShelterFooterInLayout()
         if(post.pet?.describe!=null)
             petView.addViewToLinearLayout(getDescribeTextView(post.pet?.describe!!))
-        petConverter.addFullDataToPost(post)
-        putViewsToFlexboxLayout(post.dataOfAnimal!!)
     }
 
     override fun photoIsReady(uri: Uri, index: Int) {
@@ -54,7 +61,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         val imageView = ImageView(context)
         val marginParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT) as ViewGroup.MarginLayoutParams
-        imageView.setPadding(0,30,0,0)
+        imageView.setPadding(pxFromDp,30,pxFromDp,0)
         if(index==0) marginParams.topMargin = 40
         imageView.layoutParams = marginParams
         imageView.adjustViewBounds = true
@@ -64,13 +71,28 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
 
     private fun putViewsToFlexboxLayout(list: List<Pair<String, String>>){
         for(item in list){
-            val textView = getDefaultTextView()
+            val textView = getDefaultFlexboxTextView()
             textView.text = "${item.first}: ${item.second}"
             petView.addViewToFlexboyLayout(textView)
         }
     }
 
-    private fun getDefaultTextView(): TextView {
+    private fun getPetOfWeekTextView(): TextView {
+        val textView = TextView(context)
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT)
+        textView.setPadding(0,5,0,5)
+        textView.layoutParams = params
+        textView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+        textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+        textView.textSize = 13f
+        textView.gravity = Gravity.CENTER
+        textView.text = "POST TYGODNIA"
+        return textView
+    }
+
+    private fun getDefaultFlexboxTextView(): TextView {
         val textView = TextView(context)
         val params = FlexboxLayout.LayoutParams(
             FlexboxLayout.LayoutParams.WRAP_CONTENT,
@@ -87,8 +109,8 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
     private fun getDescribeTextView(describe: String): TextView {
         val textView = TextView(context)
         val marginParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT) as ViewGroup.MarginLayoutParams
-        marginParams.topMargin = 40
+            LinearLayout.LayoutParams.WRAP_CONTENT)
+        marginParams.setMargins(pxFromDp,40,pxFromDp,0)
         textView.layoutParams = marginParams
         textView.text = describe
         textView.textSize = 16f

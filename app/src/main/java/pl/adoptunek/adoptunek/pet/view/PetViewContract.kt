@@ -24,7 +24,7 @@ interface PetViewContract {
 
         fun addViewToFlexboyLayout(view: View)
 
-        fun addViewToLinearLayout(view: View)
+        fun addViewToLinearLayout(view: View, pos: Int? = null)
 
     }
 }

@@ -10,23 +10,39 @@ import pl.adoptunek.adoptunek.Pet
 import pl.adoptunek.adoptunek.Post
 import pl.adoptunek.adoptunek.Shelter
 import pl.adoptunek.adoptunek.data.converter.PetConverterImpl
+import pl.adoptunek.adoptunek.data.pet.PetContract
+import pl.adoptunek.adoptunek.data.pet.PetDaoImpl
 import pl.adoptunek.adoptunek.fragments.home.post.recycler.PostViewHolder
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelper
 import pl.adoptunek.adoptunek.fragments.home.time.helper.TimeHelperImpl
 
-class PostDaoImpl(private val interractor: PostInterractor? = null): PostDao {
+class PostDaoImpl(private val interractor: PostInterractor? = null):
+    PostDao, PetContract.PetOfWeekListInterractor {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private val storageReference = storage.reference
     private val petConverter = PetConverterImpl()
     private val postList = mutableListOf<Post>()
+    private val petDao = PetDaoImpl(petOfWeekListInterractor = this)
     private val timeHelper: TimeHelper = TimeHelperImpl()
     private var lastSnapshot: DocumentSnapshot? = null
     private var countOfPosts = 4
     private var limitOfPosts = 4L
+    private var petOfWeekIDList: List<String>? = null
+    private var reset = false
 
     override fun getPosts(reset: Boolean){
+        this.reset = reset
+        petDao.getPetsOfWeekIDList()
+    }
+
+    override fun listWithWeekPetsIDIsReady(successfully: Boolean, idList: List<String>?) {
+        petOfWeekIDList = idList
+        generatePosts()
+    }
+
+    private fun generatePosts(){
         if(reset) postList.clear()
         val firstQuery = firestore.collection("animals")
             .orderBy("add_date", Query.Direction.DESCENDING)
@@ -60,6 +76,7 @@ class PostDaoImpl(private val interractor: PostInterractor? = null): PostDao {
         val pet = document.toObject(Pet::class.java)
         newPost.idOfAnimal = document.id
         loadPetInfoToPostObject(newPost, pet)
+        addPetOfWeekInformation(newPost)
         getShelter(pet, newPost)
     }
 
@@ -71,6 +88,13 @@ class PostDaoImpl(private val interractor: PostInterractor? = null): PostDao {
         post.timeAgo = timeHelper.howLongAgo(pet.add_date!!,
             TimeHelperImpl.POST_HOW_LONG_AGO)
         petConverter.addBasicDataToPost(post)
+    }
+
+    private fun addPetOfWeekInformation(post: Post){
+        if(petOfWeekIDList!=null){
+            if(petOfWeekIDList!!.contains(post.idOfAnimal))
+                post.petOfWeek = true
+        }
     }
 
     private fun getShelter(pet: Pet, post: Post){

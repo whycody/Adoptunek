@@ -12,7 +12,8 @@ import pl.adoptunek.adoptunek.data.converter.PetConverterInterractor
 
 class PetDaoImpl(val petGalleryInterractor: PetContract.PetGalleryInterractor? = null,
                  val petOfWeekInterractor: PetContract.PetOfWeekInterractor? = null,
-                 val petObjectInterractor: PetContract.PetObjectInterractor? = null):
+                 val petObjectInterractor: PetContract.PetObjectInterractor? = null,
+                 val petOfWeekListInterractor: PetContract.PetOfWeekListInterractor? = null):
     PetContract.PetDao, PetConverterInterractor {
 
     private val firestore = FirebaseFirestore.getInstance()
@@ -20,13 +21,29 @@ class PetDaoImpl(val petGalleryInterractor: PetContract.PetGalleryInterractor? =
     private val storageRef = storage.reference
     private val postList = mutableListOf<Post>()
     private val petConverter = PetConverterImpl(this)
+    private val petOfWeekCollection = firestore.collection("pet_of_week")
 
     override fun getPetsOfWeek() {
-        val petOfWeekCollection = firestore.collection("pet_of_week")
-        petOfWeekCollection.document("21102019").get().addOnSuccessListener{ document ->
+        petOfWeekCollection.document(getCurrentWeek()).get().addOnSuccessListener{ document ->
             val petOfWeek = document.toObject(PetOfWeek::class.java)
             for(id in petOfWeek!!.pets!!) petConverter.getPostFromPetID(id, false, true)
         }
+    }
+
+    override fun getPetsOfWeekIDList() {
+        val idList = mutableListOf<String>()
+        petOfWeekCollection.document(getCurrentWeek()).get().addOnCompleteListener{ task ->
+            if(task.isSuccessful){
+                val petOfWeek = task.result!!.toObject(PetOfWeek::class.java)
+                for(id in petOfWeek!!.pets!!) idList.add(id)
+            }
+            petOfWeekListInterractor?.listWithWeekPetsIDIsReady(task.isSuccessful, idList)
+        }
+    }
+
+    private fun getCurrentWeek(): String{
+        //TODO get current week in this function
+        return "21102019"
     }
 
     override fun getDocumentWithPet(id: String){
@@ -61,8 +78,10 @@ class PetDaoImpl(val petGalleryInterractor: PetContract.PetGalleryInterractor? =
     }
 
     override fun convertedIntoPostObject(post: Post?, successfully: Boolean) {
-        if(successfully) postList.add(post!!)
+        if(successfully){
+            post!!.petOfWeek = true
+            postList.add(post)
+        }
         if(postList.size==3) petOfWeekInterractor?.listWithWeekPetsIsReady(true, postList)
     }
-
 }

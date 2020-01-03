@@ -11,6 +11,7 @@ data class Post(var idOfAnimal: String? = null,
                 var timeAgo: String? = null,
                 var shelterUri: String? = null,
                 var petUri: String? = null,
+                var petOfWeek: Boolean? = false,
                 var dataOfAnimal: List<Pair<String, String>>? = null,
                 var pet: Pet? = null): Serializable
 

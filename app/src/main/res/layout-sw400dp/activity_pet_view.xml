@@ -63,14 +63,16 @@
             android:id="@+id/petLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="17dp">
+            android:orientation="vertical">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/petFlexboxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
+                android:paddingLeft="17dp"
+                android:paddingTop="17dp"
+                android:paddingRight="17dp"
                 app:flexDirection="row"
                 app:flexWrap="wrap" />
 

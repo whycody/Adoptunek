@@ -11,6 +11,11 @@ interface PetContract {
         fun listWithWeekPetsIsReady(successfully: Boolean = true, postList: List<Post>? = null)
     }
 
+    interface PetOfWeekListInterractor{
+
+        fun listWithWeekPetsIDIsReady(successfully: Boolean = true, idList: List<String>? = null)
+    }
+
     interface PetObjectInterractor{
 
         fun petDocumentIsReady(successfully: Boolean = true, pet: Pet? = null)
@@ -24,6 +29,8 @@ interface PetContract {
     interface PetDao{
 
         fun getPetsOfWeek()
+
+        fun getPetsOfWeekIDList()
 
         fun getDocumentWithPet(id: String)
 

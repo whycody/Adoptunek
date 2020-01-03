@@ -79,8 +79,9 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         petFlexboxLayout.addView(view)
     }
 
-    override fun addViewToLinearLayout(view: View) {
-        petLinearLayout.addView(view)
+    override fun addViewToLinearLayout(view: View, pos: Int?) {
+        if(pos!=null) petLinearLayout.addView(view, pos)
+        else petLinearLayout.addView(view)
     }
 
 }
