@@ -82,7 +82,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT)
-        textView.setPadding(0,5,0,5)
+        textView.setPadding(0,8,0,8)
         textView.layoutParams = params
         textView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
         textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
