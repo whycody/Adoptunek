@@ -27,8 +27,8 @@ class PostDaoImpl(private val interractor: PostInterractor? = null):
     private val petDao = PetDaoImpl(petOfWeekListInterractor = this)
     private val timeHelper: TimeHelper = TimeHelperImpl()
     private var lastSnapshot: DocumentSnapshot? = null
-    private var countOfPosts = 4
-    private var limitOfPosts = 4L
+    private var countOfPosts = 3
+    private var limitOfPosts = 3L
     private var petOfWeekIDList: List<String>? = null
     private var reset = false
 

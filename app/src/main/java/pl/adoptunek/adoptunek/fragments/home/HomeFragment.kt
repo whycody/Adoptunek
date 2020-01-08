@@ -95,7 +95,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
                 if(!v.canScrollVertically(1) && !isLoading && !endOfPosts){
                     isLoading = true
                     postDao.loadMorePosts()
-                    loadingProgressBar.visibility = View.VISIBLE
+                    recycler.scrollToPosition(0)
                 }
             }
         nestedScroll.setOnScrollChangeListener(nestedListener)
@@ -120,6 +120,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
 
     override fun onRefresh() {
         postDao.getPosts(true)
+        loadingProgressBar.visibility = View.VISIBLE
     }
 
     override fun listOfPostsIsReady(list: List<Post>) {
@@ -127,7 +128,6 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
             refreshLayout.isRefreshing = false
             endOfPosts = false
         }
-        loadingProgressBar.visibility = View.GONE
         presenter = HomePresenterImpl(list, context!!)
         adapter = PostRecyclerAdapter(presenter, activity!!)
         recycler.adapter = adapter
@@ -137,7 +137,6 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
         presenter.refreshListOfPosts(list)
         adapter.notifyItemInserted(list.size-1)
         isLoading = !finishedLoading
-        if(finishedLoading) loadingProgressBar.visibility = View.INVISIBLE
     }
 
     override fun endListOfPosts() {
