@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,9 +30,12 @@ import pl.adoptunek.adoptunek.fragments.home.post.recycler.PostRecyclerAdapter
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import pl.adoptunek.adoptunek.R
+import pl.adoptunek.adoptunek.network.NetworkConnectionImpl
+import pl.adoptunek.adoptunek.network.NetworkContract
 import pl.adoptunek.adoptunek.pet.view.PetViewActivity
 
-class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInterractor, PetContract.PetOfWeekInterractor {
+class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInterractor,
+    PetContract.PetOfWeekInterractor, NetworkContract.NetworkInterractor {
 
     private lateinit var presenter: HomeContract.HomePresenter
     private lateinit var adapter: PostRecyclerAdapter
@@ -39,6 +43,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
     private lateinit var recycler: RecyclerView
     private lateinit var loadingProgressBar: ProgressBar
     private lateinit var refreshLayout: SwipeRefreshLayout
+    private lateinit var networkConnection: NetworkContract.NetworkConnection
     private val postDao = PostDaoImpl(this)
     private val petDao = PetDaoImpl(null, this, null)
     private var petsOfWeekList: List<Post>? = null
@@ -70,6 +75,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
         petOfWeekView = view.findViewById(R.id.petOfWeekView)
         refreshLayout = view.findViewById(R.id.refreshLayout)
         refreshLayout.setOnRefreshListener(this)
+        networkConnection = NetworkConnectionImpl(activity!!.applicationContext, this)
         view.postsRecycle.layoutManager = LinearLayoutManager(activity)
         addScrollListenerToRecycler()
         loadPetOfWeekImages()
@@ -119,14 +125,20 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
     }
 
     override fun onRefresh() {
-        postDao.getPosts(true)
-        loadingProgressBar.visibility = View.VISIBLE
+        isLoading = true
+        if(!networkConnection.isConnectionAvailable()) networkConnection.checkConnectionWithTimer()
+        else{
+            postDao.getPosts(true)
+            loadingProgressBar.visibility = View.VISIBLE
+        }
     }
 
     override fun listOfPostsIsReady(list: List<Post>) {
+        isLoading = false
         if(refreshLayout.isRefreshing){
             refreshLayout.isRefreshing = false
             endOfPosts = false
+            recycler.stopScroll()
         }
         presenter = HomePresenterImpl(list, context!!)
         adapter = PostRecyclerAdapter(presenter, activity!!)
@@ -174,5 +186,16 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, PostInter
 
     companion object{
         val PET = "pet"
+    }
+
+    override fun connectionIsAvailable(available: Boolean) {
+        if(available){
+            postDao.getPosts(true)
+            loadingProgressBar.visibility = View.VISIBLE
+        }else{
+            isLoading = false
+            refreshLayout.isRefreshing = false
+            Toast.makeText(activity!!.applicationContext, "Brak połączenia", Toast.LENGTH_SHORT).show()
+        }
     }
 }
