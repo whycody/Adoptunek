@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseAuth
+import pl.adoptunek.adoptunek.data.offline.OfflineDatabaseImpl
 import pl.adoptunek.adoptunek.main.MainActivity
 import pl.adoptunek.adoptunek.start.StartActivity
 
@@ -13,6 +14,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        val offlineDatabase = OfflineDatabaseImpl()
+        offlineDatabase.initializeOfflineDatabase()
         checkUser()
         finish()
     }

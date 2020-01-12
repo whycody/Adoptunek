@@ -36,7 +36,8 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         res = context.resources
         pxFromDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 17f, res.displayMetrics).toInt()
         petView.setTitle(post.petName!!)
-        petView.loadPetImage(Uri.parse(post.petUri))
+        if(post.petUri!=null) petView.loadPetImage(Uri.parse(post.petUri))
+        else petView.loadPetImage()
         if(post.petOfWeek == true) petView.addViewToLinearLayout(getPetOfWeekTextView(), 0)
         petConverter.addFullDataToPost(post)
         putViewsToFlexboxLayout(post.dataOfAnimal!!)

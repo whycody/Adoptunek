@@ -20,7 +20,7 @@ interface PetViewContract {
 
         fun setTitle(title: String)
 
-        fun loadPetImage(uri: Uri)
+        fun loadPetImage(uri: Uri? = null)
 
         fun addViewToFlexboyLayout(view: View)
 

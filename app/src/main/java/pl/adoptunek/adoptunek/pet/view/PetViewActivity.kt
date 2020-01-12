@@ -71,8 +71,9 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         collapsingToolbar.title = title
     }
 
-    override fun loadPetImage(uri: Uri) {
-        Glide.with(this).load(uri).into(petImage)
+    override fun loadPetImage(uri: Uri?) {
+        Glide.with(this).load(uri).error(R.drawable.placeholder).into(petImage)
+        //TODO change gray placeholder to placeholder with pet
     }
 
     override fun addViewToFlexboyLayout(view: View) {
