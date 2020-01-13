@@ -85,7 +85,7 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
             LinearLayout.LayoutParams.WRAP_CONTENT)
         textView.setPadding(0,8,0,8)
         textView.layoutParams = params
-        textView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+        textView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed))
         textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
         textView.textSize = 13f
         textView.gravity = Gravity.CENTER

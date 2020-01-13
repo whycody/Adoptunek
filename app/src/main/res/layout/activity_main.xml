@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/mainAppBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="48dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/mainToolbar"
@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryDark"
             android:elevation="4dp"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +32,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainNav"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="52dp"
         android:background="@android:color/white"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +53,7 @@
         android:id="@+id/mainFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="51dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
