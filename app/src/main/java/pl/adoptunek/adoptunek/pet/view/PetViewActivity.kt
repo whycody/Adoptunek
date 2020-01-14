@@ -7,6 +7,9 @@ import android.view.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import pl.adoptunek.adoptunek.R
 import com.google.android.material.appbar.AppBarLayout
 import de.hdodenhof.circleimageview.CircleImageView
@@ -19,6 +22,7 @@ import kotlin.math.abs
 class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, PetViewContract.PetView {
 
     private val presenter = PetViewPresenterImpl(this, this)
+    private lateinit var post: Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +33,20 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         collapsingToolbar.setStatusBarScrimColor(ContextCompat.getColor(this, android.R.color.transparent))
         petAppBar.addOnOffsetChangedListener(this)
+        prepareShelterInStartLayout()
+        if(post.petOfWeek == true) postOfWeekView.visibility = View.VISIBLE
+    }
+
+    private fun prepareShelterInStartLayout(){
+        shelterName.text = post.shelterName
+        val requestOptions = RequestOptions().transform(RoundedCorners(10))
+        Glide.with(this).load(getPost().shelterUri).apply(requestOptions).transition(
+            DrawableTransitionOptions.withCrossFade()).into(shelterImage)
     }
 
     override fun showShelterFooterInLayout() {
         val shelterImage = footerShelter.findViewById<CircleImageView>(R.id.shelterImage)
-        Glide.with(this).load(getPost().shelterUri).into(shelterImage)
+        Glide.with(this).load(post.shelterUri).into(shelterImage)
         footerShelter.findViewById<TextView>(R.id.shelterName).text = getPost().shelterName
         footerShelter.visibility = View.VISIBLE
     }
@@ -64,7 +77,8 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
     }
 
     override fun getPost(): Post {
-        return intent.getSerializableExtra(HomeFragment.PET) as Post
+        post = intent.getSerializableExtra(HomeFragment.PET) as Post
+        return post
     }
 
     override fun setTitle(title: String) {

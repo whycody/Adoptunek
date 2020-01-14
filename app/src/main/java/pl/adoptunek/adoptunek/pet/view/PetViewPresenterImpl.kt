@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -38,7 +37,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         petView.setTitle(post.petName!!)
         if(post.petUri!=null) petView.loadPetImage(Uri.parse(post.petUri))
         else petView.loadPetImage()
-        if(post.petOfWeek == true) petView.addViewToLinearLayout(getPetOfWeekTextView(), 0)
         petConverter.addFullDataToPost(post)
         putViewsToFlexboxLayout(post.dataOfAnimal!!)
         petDao.getPhotosOfPet(post.idOfAnimal!!)
@@ -76,21 +74,6 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
             textView.text = "${item.first}: ${item.second}"
             petView.addViewToFlexboyLayout(textView)
         }
-    }
-
-    private fun getPetOfWeekTextView(): TextView {
-        val textView = TextView(context)
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT)
-        textView.setPadding(0,8,0,8)
-        textView.layoutParams = params
-        textView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed))
-        textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
-        textView.textSize = 13f
-        textView.gravity = Gravity.CENTER
-        textView.text = "POST TYGODNIA"
-        return textView
     }
 
     private fun getDefaultFlexboxTextView(): TextView {
