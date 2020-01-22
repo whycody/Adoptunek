@@ -1,5 +1,6 @@
 package pl.adoptunek.adoptunek.pet.view
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +24,7 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
 
     private val presenter = PetViewPresenterImpl(this, this)
     private lateinit var post: Post
+    private var voted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,20 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
         petAppBar.addOnOffsetChangedListener(this)
         prepareShelterInStartLayout()
         if(post.petOfWeek == true) postOfWeekView.visibility = View.VISIBLE
+        petFab.setOnClickListener{fabClicked()}
+    }
+
+    private fun fabClicked(){
+        petFab.isClickable = false
+        petFab.animate().rotationBy(90f).setDuration(100).scaleX(1.1f).scaleY(1.1f).withEndAction{
+            val draw = if(!voted) R.drawable.ic_support_border_very_bold_yellow
+            else R.drawable.ic_support_border_very_bold
+            petFab.setImageResource(draw)
+            petFab.animate().rotationBy(90f).setDuration(100).scaleX(1f).scaleY(1f).withEndAction{
+                petFab.isClickable = true
+            }.start()
+            voted=!voted
+        }.start()
     }
 
     private fun prepareShelterInStartLayout(){
