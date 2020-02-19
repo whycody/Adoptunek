@@ -1,6 +1,5 @@
 package pl.adoptunek.adoptunek.pet.view
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -42,15 +41,26 @@ class PetViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListene
 
     private fun fabClicked(){
         petFab.isClickable = false
-        petFab.animate().rotationBy(90f).setDuration(100).scaleX(1.1f).scaleY(1.1f).withEndAction{
-            val draw = if(!voted) R.drawable.ic_support_border_very_bold_yellow
-            else R.drawable.ic_support_border_very_bold
-            petFab.setImageResource(draw)
-            petFab.animate().rotationBy(90f).setDuration(100).scaleX(1f).scaleY(1f).withEndAction{
+        petFab.animate().rotationBy(90f).scaleX(1.1f).scaleY(1.1f).setDuration(100).withEndAction{
+            changeImageOfFAB()
+            petFab.animate().rotationBy(90f).scaleX(1f).scaleY(1f).setDuration(100).withEndAction{
+                refreshVariablesAfterAnimation()
                 petFab.isClickable = true
             }.start()
-            voted=!voted
         }.start()
+    }
+
+    private fun changeImageOfFAB(){
+        val nextDraw = if(!voted) R.drawable.ic_support_border_very_bold_yellow
+        else R.drawable.ic_support_border_very_bold
+        petFab.setImageResource(nextDraw)
+        petFab.hide()
+        petFab.show()
+    }
+
+    private fun refreshVariablesAfterAnimation(){
+        petFab.rotation = 0f
+        voted=!voted
     }
 
     private fun prepareShelterInStartLayout(){
