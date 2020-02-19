@@ -99,7 +99,8 @@ class PetViewPresenterImpl(val context: Context, val petView: PetViewContract.Pe
         textView.text = describe
         textView.textSize = 16f
         textView.setTextColor(ContextCompat.getColor(context, android.R.color.black))
-        textView.alpha = 0.7f
+        textView.letterSpacing = 0.01f
+        textView.alpha = 0.6f
         textView.setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f,
             context.resources.displayMetrics), 1.0f)
         return textView
